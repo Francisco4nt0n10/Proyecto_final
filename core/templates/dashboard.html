@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard | Proyecto Final</title>
+</head>
+<body style="font-family: sans-serif; text-align: center; margin-top: 100px; background-color: #f3f4f6;">
+<div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+<h1>¡Bienvenido, {{ user.username }}!</h1>
+<p class="text-lg text-gray-600">Has accedido al Panel de Control de tu aplicación.</p>
+
+    <p style="margin-top: 40px;">Esta página está protegida por <code>@login_required</code>.</p>
+    
+    <div style="margin-top: 30px;">
+        <a href="{% url 'account_logout' %}" style="text-decoration: none; padding: 10px 20px; background-color: #EF4444; color: white; border-radius: 5px;">
+            Cerrar Sesión
+        </a>
+    </div>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Página de Inicio | Proyecto Final</title>
+</head>
+<body style="font-family: sans-serif; text-align: center; margin-top: 100px;">
+<h1>Bienvenido a tu Proyecto Final</h1>
+<p>Esta es la página de inicio (Home) Aqui se tiene que ver un usuario antes de iniciar sesión.</p>
+
+<div style="margin-top: 30px;">
+    <a href="{% url 'account_login' %}" style="text-decoration: none; padding: 10px 20px; background-color: #3B82F6; color: white; border-radius: 5px; margin: 10px;">
+        Iniciar Sesión
+    </a>
+    <a href="{% url 'account_signup' %}" style="text-decoration: none; padding: 10px 20px; background-color: #10B981; color: white; border-radius: 5px; margin: 10px;">
+        Registrarse
+    </a>
+</div>
+
+
+</body>
+</html>
