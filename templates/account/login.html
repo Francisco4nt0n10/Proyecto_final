@@ -1,0 +1,25 @@
+{% load socialaccount %}
+{% load account %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inicio de Sesión</title>
+</head>
+<body style="font-family: sans-serif; text-align: center; margin-top: 100px;">
+
+<h2>Iniciar sesión</h2>
+
+<form method="POST" action="{% url 'account_login' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit" style="text-decoration: none; padding: 5px 10px; background-color: #3125df; color: white; border-radius: 5px; margin: 10px;">Entrar</button>
+</form>
+
+<p>¿No tienes cuenta? <a href="{% url 'account_signup' %}">Regístrate aquí</a></p>
+
+<p><a href="{% url 'account_reset_password' %}">¿Olvidaste tu contraseña?</a></p>
+
+</body>
+</html>
