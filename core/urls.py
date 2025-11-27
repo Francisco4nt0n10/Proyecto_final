@@ -10,4 +10,6 @@ urlpatterns = [
     
     # Ruta del panel de control: '/dashboard/'
     path('dashboard/', views.dashboard, name='dashboard'),
+    
+
 ]
