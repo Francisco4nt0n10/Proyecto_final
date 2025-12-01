@@ -1,0 +1,5 @@
+Django==5.0
+psycopg[binary]
+django-allauth
+django-crispy-forms
+crispy-bootstrap5
