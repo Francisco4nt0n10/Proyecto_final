@@ -1,15 +1,30 @@
 from django.urls import path
-from . import views
-
-# Definición del nombre de la aplicación para usarla en las plantillas (por ejemplo: core:dashboard)
-app_name = 'core'
+from .views import (
+    home,
+    dashboard,
+    TrabajadorListView,
+    TrabajadorCreateView,
+    TrabajadorUpdateView,
+    TrabajadorDeleteView,
+    UnidadListView,
+    UnidadCreateView,
+    UnidadUpdateView,
+    UnidadDeleteView,
+)
 
 urlpatterns = [
-    # Ruta de inicio: '/'
-    path('', views.home, name='home'),
-    
-    # Ruta del panel de control: '/dashboard/'
-    path('dashboard/', views.dashboard, name='dashboard'),
-    
+    path("", home, name="home"),
+    path("dashboard/", dashboard, name="dashboard"),
 
+    # TRABAJADORES
+    path("trabajadores/", TrabajadorListView.as_view(), name="trabajador_list"),
+    path("trabajadores/nuevo/", TrabajadorCreateView.as_view(), name="trabajador_create"),
+    path("trabajadores/<int:pk>/editar/", TrabajadorUpdateView.as_view(), name="trabajador_edit"),
+    path("trabajadores/<int:pk>/eliminar/", TrabajadorDeleteView.as_view(), name="trabajador_delete"),
+
+    # UNIDADES
+    path("unidades/", UnidadListView.as_view(), name="unidad_list"),
+    path("unidades/nueva/", UnidadCreateView.as_view(), name="unidad_create"),
+    path("unidades/<int:pk>/editar/", UnidadUpdateView.as_view(), name="unidad_edit"),
+    path("unidades/<int:pk>/eliminar/", UnidadDeleteView.as_view(), name="unidad_delete"),
 ]

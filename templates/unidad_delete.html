@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="text-2xl font-semibold text-red-700 mb-4">Eliminar Unidad Administrativa</h2>
+
+<form method="post" class="bg-white p-6 shadow rounded max-w-xl">
+    {% csrf_token %}
+
+    <p class="text-gray-700">
+        ¿Seguro que deseas eliminar la unidad
+        <strong>{{ object.nombre }}</strong>?
+    </p>
+
+    <button type="submit"
+            class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded mt-4">
+        Sí, eliminar
+    </button>
+
+    <a href="{% url 'unidad_list' %}"
+       class="ml-3 text-gray-600 hover:underline">Cancelar</a>
+</form>
+{% endblock %}
