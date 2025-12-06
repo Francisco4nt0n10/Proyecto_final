@@ -10,4 +10,7 @@ urlpatterns = [
     
     # URLs de autenticación (login, logout, signup)
     path('accounts/', include('allauth.urls')), 
+
+    
+
 ]

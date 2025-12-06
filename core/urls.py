@@ -16,6 +16,7 @@ urlpatterns = [
     path("", home, name="home"),
     path("dashboard/", dashboard, name="dashboard"),
 
+
     # TRABAJADORES
     path("trabajadores/", TrabajadorListView.as_view(), name="trabajador_list"),
     path("trabajadores/nuevo/", TrabajadorCreateView.as_view(), name="trabajador_create"),
@@ -27,4 +28,6 @@ urlpatterns = [
     path("unidades/nueva/", UnidadCreateView.as_view(), name="unidad_create"),
     path("unidades/<int:pk>/editar/", UnidadUpdateView.as_view(), name="unidad_edit"),
     path("unidades/<int:pk>/eliminar/", UnidadDeleteView.as_view(), name="unidad_delete"),
+
+
 ]
