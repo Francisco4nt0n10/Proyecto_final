@@ -7,7 +7,8 @@ from .models import (
     Trabajador,
     Puesto,
     TipoNombramiento,
-    JornadaLaboral
+    JornadaLaboral,
+    RegistroAsistencia
 )
 
 
@@ -278,3 +279,31 @@ class JornadaLaboralTests(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertFalse(JornadaLaboral.objects.filter(id=self.jornada.id).exists())
+
+ 
+#   PRUEBAS REGISTRO DE ASISTENCIA
+# ---------------------------------------------------------
+class AsistenciaTests(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="testuser",
+            password="pass1234"
+        )
+
+        # Crear TipoNombramiento válido
+        self.tipoNombramiento = TipoNombramiento.objects.create(
+            descripcion="Base"
+        )
+
+        # Crear trabajador válido con ForeignKey reales
+        self.trabajador = Trabajador.objects.create(
+            nombre="Juan Pérez",
+            apellido_paterno="Pérez",
+            apellido_materno="Ramírez",
+            rfc="JUAP800101XXX",
+            curp="JUAP800101HDFRRN01",
+            numero_empleado="123",
+            tipo_nombramiento=self.tipoNombramiento,   
+        )
+

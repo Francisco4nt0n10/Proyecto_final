@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Registro de Asistencias</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Trabajador</th>
+            <th>Fecha</th>
+            <th>Entrada</th>
+            <th>Salida</th>
+            <th>Estatus</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for a in asistencias %}
+        <tr>
+            <td>{{ a.trabajador }}</td>
+            <td>{{ a.fecha }}</td>
+            <td>{{ a.hora_entrada|default:"-" }}</td>
+            <td>{{ a.hora_salida|default:"-" }}</td>
+            <td>{{ a.estatus }}</td>
+            <td>
+                <a href="{% url 'asistencia_edit' a.id %}" class="btn btn-warning btn-sm">Editar</a>
+                <a href="{% url 'asistencia_delete' a.id %}" class="btn btn-danger btn-sm">Eliminar</a>
+
+                <a href="{% url 'marcar_entrada' a.trabajador.id %}" class="btn btn-success btn-sm">Entrada</a>
+                <a href="{% url 'marcar_salida' a.trabajador.id %}" class="btn btn-info btn-sm">Salida</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

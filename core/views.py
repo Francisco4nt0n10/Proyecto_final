@@ -1,12 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from datetime import date
+
 
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from .models import Trabajador, UnidadAdministrativa, JornadaLaboral
-from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm
+from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia
+from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm,RegistroAsistenciaForm
 
 
 # ---------- HOME / DASHBOARD ----------
@@ -102,3 +105,72 @@ class JornadaDeleteView(LoginRequiredMixin, DeleteView):
     model = JornadaLaboral
     template_name = "jornada_delete.html"
     success_url = reverse_lazy("jornada_list")
+    
+#Registro Asistencia
+class AsistenciaListView(LoginRequiredMixin, ListView):
+    model = RegistroAsistencia
+    template_name = "asistencia_list.html"
+    context_object_name = "asistencias"
+
+
+class AsistenciaDeleteView(LoginRequiredMixin, DeleteView):
+    model = RegistroAsistencia
+    template_name = "asistencia_delete.html"
+    success_url = reverse_lazy("asistencia_list")
+
+class AsistenciaCreateView(LoginRequiredMixin, CreateView):
+    model = RegistroAsistencia
+    form_class = RegistroAsistenciaForm
+    template_name = "asistencia_form.html"
+    success_url = reverse_lazy("asistencia_list")
+
+
+class AsistenciaUpdateView(LoginRequiredMixin, UpdateView):
+    model = RegistroAsistencia
+    form_class = RegistroAsistenciaForm
+    template_name = "asistencia_form.html"
+    success_url = reverse_lazy("asistencia_list")
+
+def marcar_salida(request, trabajador_id):
+    trabajador = get_object_or_404(Trabajador, id=trabajador_id)
+    hoy = date.today()
+
+    registro = RegistroAsistencia.objects.filter(
+        trabajador=trabajador,
+        fecha=hoy
+    ).first()
+
+    if not registro:
+        messages.error(request, "No puedes registrar salida sin entrada.")
+        return redirect("asistencia_list")
+
+    if registro.hora_salida:
+        messages.error(request, "La salida ya fue registrada.")
+        return redirect("asistencia_list")
+
+    registro.hora_salida = timezone.now().time()
+    registro.save()
+
+    messages.success(request, "Salida registrada correctamente.")
+    return redirect("asistencia_list")
+
+
+def marcar_entrada(request, trabajador_id):
+    trabajador = get_object_or_404(Trabajador, id=trabajador_id)
+    hoy = date.today()
+
+    registro, creado = RegistroAsistencia.objects.get_or_create(
+        trabajador=trabajador,
+        fecha=hoy,
+    )
+
+    if registro.hora_entrada:
+        messages.error(request, "La entrada ya fue registrada.")
+        return redirect("asistencia_list")
+
+    registro.hora_entrada = timezone.now().time()
+    registro.save()
+
+    messages.success(request, "Entrada registrada correctamente.")
+    return redirect("asistencia_list")
+
