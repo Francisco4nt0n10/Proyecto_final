@@ -2,24 +2,133 @@
 {% load account %}
 
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Inicio de Sesión</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión Profesional</title>
+    
+    <style>
+        /* ------------------ ESTILOS BASE Y FONDO ------------------ */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6; /* Fondo gris claro suave */
+            display: flex;
+            justify-content: center; /* Centra horizontalmente */
+            align-items: center;     /* Centra verticalmente */
+            min-height: 100vh;       /* Ocupa toda la altura de la vista */
+            margin: 0;
+        }
+
+        /* ------------------ ESTILOS DEL CONTENEDOR (CARD) ------------------ */
+        .login-card {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra elegante */
+            width: 100%;
+            max-width: 380px; /* Ancho máximo para el formulario */
+            text-align: center;
+        }
+
+        /* ------------------ TÍTULO ------------------ */
+        h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        /* ------------------ ESTILOS DEL FORMULARIO (generado por Django) ------------------ */
+        form p {
+            margin-bottom: 20px; /* Espaciado entre campos */
+            text-align: left;
+        }
+
+        /* Etiqueta del campo */
+        form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        /* Campos de texto y password */
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box; /* Asegura que el padding no desborde el ancho */
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #007bff; /* Borde azul al enfocar */
+            outline: none; /* Elimina el borde de enfoque predeterminado */
+        }
+        
+        /* Checkbox "Remember Me" */
+        input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        /* ------------------ ESTILO DEL BOTÓN PRINCIPAL ------------------ */
+        button[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background-color: #007bff; /* Color primario moderno (Azul) */
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3; /* Tono más oscuro al pasar el ratón */
+        }
+
+        /* ------------------ ESTILOS DE ENLACES ADICIONALES ------------------ */
+        .extra-links {
+            margin-top: 30px;
+            font-size: 14px;
+        }
+
+        .extra-links a {
+            color: #007bff; /* El mismo azul que el botón */
+            text-decoration: none;
+            margin: 5px 0;
+            display: block; /* Para que cada enlace ocupe su propia línea */
+        }
+
+        .extra-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
-<body style="font-family: sans-serif; text-align: center; margin-top: 100px;">
+<body>
 
-<h2>Iniciar sesión</h2>
+<div class="login-card">
+    <h2>Iniciar sesión</h2>
 
-<form method="POST" action="{% url 'account_login' %}">
-    {% csrf_token %}
-    {{ form.as_p }}
+    <form method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        
+        {{ form.as_p }}
 
-    <button type="submit" style="text-decoration: none; padding: 5px 10px; background-color: #3125df; color: white; border-radius: 5px; margin: 10px;">Entrar</button>
-</form>
+        <button type="submit">Entrar</button>
+    </form>
 
-<p>¿No tienes cuenta? <a href="{% url 'account_signup' %}">Regístrate aquí</a></p>
-
-<p><a href="{% url 'account_reset_password' %}">¿Olvidaste tu contraseña?</a></p>
+    <div class="extra-links">
+        <p>¿No tienes cuenta? <a href="{% url 'account_signup' %}">Regístrate aquí</a></p>
+        <p><a href="{% url 'account_reset_password' %}">¿Olvidaste tu contraseña?</a></p>
+    </div>
+</div>
 
 </body>
 </html>
