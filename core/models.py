@@ -70,17 +70,38 @@ class TrabajadorJornada(models.Model):
     def __str__(self):
         return f"{self.trabajador} - {self.jornada}"
 
-# Modelo RegistroAsistencia
+        
+# Modelo Registro Asistencia
 class RegistroAsistencia(models.Model):
     trabajador = models.ForeignKey('Trabajador', on_delete=models.CASCADE)
     fecha = models.DateField()
-    hora_entrada = models.TimeField()
-    hora_salida = models.TimeField()
-    estatus = models.CharField(max_length=50)  # Asistencia normal, Retardo, Falta, etc.
+
+    hora_entrada = models.TimeField(null=True, blank=True)
+    hora_salida = models.TimeField(null=True, blank=True)
+
+    estatus = models.CharField(max_length=50, default="Pendiente")
+
+    def calcular_estatus(self):
+        """Evalúa la asistencia según la jornada asignada."""
+        jornada = self.trabajador.jornada  # Asegúrate de que trabajador tenga FK a JornadaLaboral
+
+        if not self.hora_entrada:
+            self.estatus = "Falta"
+            return
+
+        # RETARDO
+        if self.hora_entrada > jornada.hora_entrada:
+            self.estatus = "Retardo"
+        else:
+            self.estatus = "Asistencia normal"
+
+    def save(self, *args, **kwargs):
+        if self.hora_entrada:
+            self.calcular_estatus()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Asistencia de {self.trabajador} - {self.fecha}"
-
 # Modelo TipoIncidencia
 class TipoIncidencia(models.Model):
     descripcion = models.CharField(max_length=100)

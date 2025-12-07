@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-danger">Confirmar eliminación</h2>
+    <hr>
+
+    <p>
+        ¿Estás seguro de que deseas eliminar este registro de asistencia?
+    </p>
+
+    <ul>
+        <li><strong>Trabajador:</strong> {{ object.trabajador }}</li>
+        <li><strong>Fecha:</strong> {{ object.fecha }}</li>
+        <li><strong>Entrada:</strong> {{ object.hora_entrada|default:"---" }}</li>
+        <li><strong>Salida:</strong> {{ object.hora_salida|default:"---" }}</li>
+        <li><strong>Estatus:</strong> {{ object.estatus }}</li>
+    </ul>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">
+            Sí, eliminar
+        </button>
+        <a href="{% url 'asistencia_list' %}" class="btn btn-secondary">
+            Cancelar
+        </a>
+    </form>
+</div>
+{% endblock %}
