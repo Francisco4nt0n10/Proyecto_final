@@ -5,8 +5,8 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from .models import Trabajador, UnidadAdministrativa
-from .forms import TrabajadorForm, UnidadAdministrativaForm
+from .models import Trabajador, UnidadAdministrativa, JornadaLaboral
+from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm
 
 
 # ---------- HOME / DASHBOARD ----------
@@ -32,14 +32,14 @@ class TrabajadorListView(LoginRequiredMixin, ListView):
 class TrabajadorCreateView(LoginRequiredMixin, CreateView):
     model = Trabajador
     form_class = TrabajadorForm
-    template_name = "trabajador_create.html"   
+    template_name = "trabajador_create.html"
     success_url = reverse_lazy("trabajador_list")
 
 
 class TrabajadorUpdateView(LoginRequiredMixin, UpdateView):
     model = Trabajador
     form_class = TrabajadorForm
-    template_name = "trabajador_create.html"   
+    template_name = "trabajador_create.html"
     success_url = reverse_lazy("trabajador_list")
 
 
@@ -50,6 +50,7 @@ class TrabajadorDeleteView(LoginRequiredMixin, DeleteView):
 
 
 # ---------- UNIDAD ADMINISTRATIVA ----------
+
 class UnidadListView(LoginRequiredMixin, ListView):
     model = UnidadAdministrativa
     template_name = "unidad_list.html"
@@ -59,14 +60,14 @@ class UnidadListView(LoginRequiredMixin, ListView):
 class UnidadCreateView(LoginRequiredMixin, CreateView):
     model = UnidadAdministrativa
     form_class = UnidadAdministrativaForm
-    template_name = "unidad_form.html"     
+    template_name = "unidad_form.html"
     success_url = reverse_lazy("unidad_list")
 
 
 class UnidadUpdateView(LoginRequiredMixin, UpdateView):
     model = UnidadAdministrativa
     form_class = UnidadAdministrativaForm
-    template_name = "unidad_form.html"     
+    template_name = "unidad_form.html"
     success_url = reverse_lazy("unidad_list")
 
 
@@ -74,3 +75,30 @@ class UnidadDeleteView(LoginRequiredMixin, DeleteView):
     model = UnidadAdministrativa
     template_name = "unidad_delete.html"
     success_url = reverse_lazy("unidad_list")
+
+
+# ---------- JORNADA LABORAL ----------
+class JornadaListView(LoginRequiredMixin, ListView):
+    model = JornadaLaboral
+    template_name = "jornada_list.html"
+    context_object_name = "jornadas"
+
+
+class JornadaCreateView(LoginRequiredMixin, CreateView):
+    model = JornadaLaboral
+    form_class = JornadaLaboralForm
+    template_name = "jornada_form.html"
+    success_url = reverse_lazy("jornada_list")
+
+
+class JornadaUpdateView(LoginRequiredMixin, UpdateView):
+    model = JornadaLaboral
+    form_class = JornadaLaboralForm
+    template_name = "jornada_form.html"
+    success_url = reverse_lazy("jornada_list")
+
+
+class JornadaDeleteView(LoginRequiredMixin, DeleteView):
+    model = JornadaLaboral
+    template_name = "jornada_delete.html"
+    success_url = reverse_lazy("jornada_list")

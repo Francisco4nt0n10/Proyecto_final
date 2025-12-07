@@ -1,5 +1,5 @@
 from django import forms
-from .models import Trabajador, UnidadAdministrativa
+from .models import Trabajador, UnidadAdministrativa, JornadaLaboral
 
 
 class TrabajadorForm(forms.ModelForm):
@@ -27,3 +27,9 @@ class UnidadAdministrativaForm(forms.ModelForm):
             "descripcion",
             "unidad_padre",
         ]
+
+
+class JornadaLaboralForm(forms.ModelForm):
+    class Meta:
+        model = JornadaLaboral
+        fields = ["descripcion", "hora_entrada", "hora_salida", "dias_semana"]   

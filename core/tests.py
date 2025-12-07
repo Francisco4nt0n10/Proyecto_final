@@ -7,6 +7,7 @@ from .models import (
     Trabajador,
     Puesto,
     TipoNombramiento,
+    JornadaLaboral
 )
 
 
@@ -200,3 +201,80 @@ class TrabajadorTests(BaseTestCase):
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Trabajador.objects.count(), 0)
+
+#   PRUEBAS JORNADAS
+class JornadaLaboralTests(TestCase):
+
+    def setUp(self):
+        # Crear usuario para autenticación
+        self.user = User.objects.create_user(
+            username="testuser",
+            password="pass1234"
+        )
+
+        # Crear una jornada de prueba
+        self.jornada = JornadaLaboral.objects.create(
+            descripcion="Jornada Matutina",
+            hora_entrada="08:00",
+            hora_salida="14:00",
+            dias_semana="L-V"
+        )
+
+    def test_jornada_list_view(self):
+      
+        self.client.login(username="testuser", password="pass1234")
+
+        url = reverse("jornada_list")   # <-- corregido
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Jornada Matutina")
+        self.assertTemplateUsed(response, "jornada_list.html")
+
+    def test_jornada_create_view(self):
+     
+        self.client.login(username="testuser", password="pass1234")
+
+        url = reverse("jornada_create")   # <-- corregido
+        data = {
+            "descripcion": "Jornada Vespertina",
+            "hora_entrada": "14:00",
+            "hora_salida": "20:00",
+            "dias_semana": "L-V"
+        }
+
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)  # redirección
+
+        self.assertTrue(JornadaLaboral.objects.filter(
+            descripcion="Jornada Vespertina"
+        ).exists())
+
+    def test_jornada_update_view(self):
+      
+        self.client.login(username="testuser", password="pass1234")
+
+        url = reverse("jornada_update", args=[self.jornada.id])   # <-- corregido
+
+        data = {
+            "descripcion": "Jornada Matutina Actualizada",
+            "hora_entrada": "08:00",
+            "hora_salida": "15:00",
+            "dias_semana": "L-V"
+        }
+
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, 302)
+
+        self.jornada.refresh_from_db()
+        self.assertEqual(self.jornada.descripcion, "Jornada Matutina Actualizada")
+
+    def test_jornada_delete_view(self):
+       
+        self.client.login(username="testuser", password="pass1234")
+
+        url = reverse("jornada_delete", args=[self.jornada.id])   # <-- corregido
+        response = self.client.post(url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(JornadaLaboral.objects.filter(id=self.jornada.id).exists())
