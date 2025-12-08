@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia, CalendarioLaboral
+from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia, CalendarioLaboral, Incidencia
 from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm,RegistroAsistenciaForm
 
 
@@ -200,3 +200,44 @@ class CalendarioLaboralDelete(DeleteView):
     model = CalendarioLaboral
     template_name = "calendario_laboral_delete.html"   
     success_url = reverse_lazy("calendario_laboral_list")
+
+
+# ====== INCIDENCIAS ======
+
+class IncidenciaListView(LoginRequiredMixin, ListView):
+    model = Incidencia
+    template_name = "incidencia_list.html"
+    context_object_name = "incidencias"
+
+    def get_queryset(self):
+        # Para no hacer demasiadas consultas
+        return (
+            Incidencia.objects
+            .select_related("trabajador", "tipo_incidencia", "autorizada_por")
+            .order_by("-fecha_inicio")
+        )
+
+
+class IncidenciaCreateView(LoginRequiredMixin, CreateView):
+    model = Incidencia
+    fields = ["trabajador", "tipo_incidencia", "fecha_inicio", "fecha_fin", "observaciones"]
+    template_name = "incidencia_form.html"
+    success_url = reverse_lazy("incidencia_list")
+
+    def form_valid(self, form):
+        # El usuario logueado queda como quien autoriza
+        form.instance.autorizada_por = self.request.user
+        return super().form_valid(form)
+
+
+class IncidenciaUpdateView(LoginRequiredMixin, UpdateView):
+    model = Incidencia
+    fields = ["trabajador", "tipo_incidencia", "fecha_inicio", "fecha_fin", "observaciones"]
+    template_name = "incidencia_form.html"
+    success_url = reverse_lazy("incidencia_list")
+
+
+class IncidenciaDeleteView(LoginRequiredMixin, DeleteView):
+    model = Incidencia
+    template_name = "incidencia_delete.html"
+    success_url = reverse_lazy("incidencia_list")

@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth.models import User
+from datetime import date
 
 from .models import (
     UnidadAdministrativa,
@@ -8,7 +9,8 @@ from .models import (
     Puesto,
     TipoNombramiento,
     JornadaLaboral,
-    RegistroAsistencia
+    RegistroAsistencia,
+    CalendarioLaboral,
 )
 
 
@@ -307,3 +309,112 @@ class AsistenciaTests(TestCase):
             tipo_nombramiento=self.tipoNombramiento,   
         )
 
+
+class CalendarioLaboralViewsTests(TestCase):
+    def setUp(self):
+        # Un registro de ejemplo para usar en list / update / delete
+        self.dia = CalendarioLaboral.objects.create(
+            fecha=date(2025, 1, 15),
+            es_inhabil=True,
+            descripcion="Día de prueba inhábil",
+        )
+
+    # ---------- LISTA ----------
+
+    def test_lista_usa_template_correcto(self):
+        url = reverse("calendario_laboral_list")
+        respuesta = self.client.get(url)
+
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertTemplateUsed(respuesta, "calendario_laboral_list.html")
+
+    def test_lista_muestra_registros(self):
+        url = reverse("calendario_laboral_list")
+        respuesta = self.client.get(url)
+
+        # Debe aparecer la descripción del día creado en setUp
+        self.assertContains(respuesta, "Día de prueba inhábil")
+
+    # ---------- CREAR ----------
+
+    def test_crear_usa_template_correcto(self):
+        url = reverse("calendario_laboral_create")
+        respuesta = self.client.get(url)
+
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertTemplateUsed(respuesta, "calendario_laboral_form.html")
+
+    def test_crear_registro_calendario(self):
+        url = reverse("calendario_laboral_create")
+        datos = {
+            "fecha": "2025-02-01",
+            "es_inhabil": False,
+            "descripcion": "Día laborable de prueba",
+        }
+        respuesta = self.client.post(url, datos)
+
+        # Debe redirigir al listado
+        self.assertEqual(respuesta.status_code, 302)
+        self.assertEqual(
+            respuesta.url,
+            reverse("calendario_laboral_list"),
+        )
+
+        # Se creó el registro en la BD
+        self.assertTrue(
+            CalendarioLaboral.objects.filter(
+                fecha="2025-02-01", descripcion="Día laborable de prueba"
+            ).exists()
+        )
+
+    # ---------- EDITAR ----------
+
+    def test_editar_usa_template_correcto(self):
+        url = reverse("calendario_laboral_update", args=[self.dia.id])
+        respuesta = self.client.get(url)
+
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertTemplateUsed(respuesta, "calendario_laboral_form.html")
+
+    def test_editar_registro_calendario(self):
+        url = reverse("calendario_laboral_update", args=[self.dia.id])
+        datos = {
+            "fecha": self.dia.fecha,
+            "es_inhabil": False,
+            "descripcion": "Día modificado",
+        }
+        respuesta = self.client.post(url, datos)
+
+        self.assertEqual(respuesta.status_code, 302)
+        self.assertEqual(
+            respuesta.url,
+            reverse("calendario_laboral_list"),
+        )
+
+        self.dia.refresh_from_db()
+        self.assertEqual(self.dia.descripcion, "Día modificado")
+        self.assertFalse(self.dia.es_inhabil)
+
+    # ---------- ELIMINAR ----------
+
+    def test_eliminar_usa_template_correcto(self):
+        url = reverse("calendario_laboral_delete", args=[self.dia.id])
+        respuesta = self.client.get(url)
+
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertTemplateUsed(respuesta, "calendario_laboral_delete.html")
+
+    def test_eliminar_registro_calendario(self):
+        url = reverse("calendario_laboral_delete", args=[self.dia.id])
+        respuesta = self.client.post(url)
+
+        self.assertEqual(respuesta.status_code, 302)
+        self.assertEqual(
+            respuesta.url,
+            reverse("calendario_laboral_list"),
+        )
+
+        # El registro ya no debe existir
+        self.assertFalse(
+            CalendarioLaboral.objects.filter(id=self.dia.id).exists()
+        )

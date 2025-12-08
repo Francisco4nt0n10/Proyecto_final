@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h1 class="h5 text-danger mb-3">Eliminar incidencia</h1>
+
+        <p>
+            ¿Seguro que deseas eliminar la incidencia de
+            <strong>{{ object.trabajador }}</strong>
+            de tipo <strong>{{ object.tipo_incidencia.descripcion }}</strong>?
+        </p>
+
+        <ul class="list-group mb-3">
+            <li class="list-group-item"><strong>Inicio:</strong> {{ object.fecha_inicio }}</li>
+            <li class="list-group-item"><strong>Fin:</strong> {{ object.fecha_fin|default:"-" }}</li>
+            <li class="list-group-item"><strong>Observaciones:</strong> {{ object.observaciones }}</li>
+        </ul>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'incidencia_list' %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-danger">Sí, eliminar</button>
+            </div>
+        </form>
+    </div>
+</div>
