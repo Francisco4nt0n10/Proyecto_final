@@ -2,13 +2,13 @@ from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from datetime import date
-
+from django.contrib import messages
 
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia
+from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia, CalendarioLaboral
 from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm,RegistroAsistenciaForm
 
 
@@ -174,3 +174,29 @@ def marcar_entrada(request, trabajador_id):
     messages.success(request, "Entrada registrada correctamente.")
     return redirect("asistencia_list")
 
+# ---------- Calendario Laboral ----------
+class CalendarioLaboralList(ListView):
+    model = CalendarioLaboral
+    template_name = "calendario_laboral_list.html"
+    context_object_name = "calendarios"
+    ordering = ["fecha"]
+
+
+class CalendarioLaboralCreate(CreateView):
+    model = CalendarioLaboral
+    fields = ["fecha", "es_inhabil", "descripcion"]
+    template_name = "calendario_laboral_form.html"
+    success_url = reverse_lazy("calendario_laboral_list")
+
+
+class CalendarioLaboralUpdate(UpdateView):
+    model = CalendarioLaboral
+    fields = ["fecha", "es_inhabil", "descripcion"]
+    template_name = "calendario_laboral_form.html"
+    success_url = reverse_lazy("calendario_laboral_list")
+
+
+class CalendarioLaboralDelete(DeleteView):
+    model = CalendarioLaboral
+    template_name = "calendario_laboral_delete.html"   
+    success_url = reverse_lazy("calendario_laboral_list")

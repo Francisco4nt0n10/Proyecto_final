@@ -18,6 +18,10 @@ from .views import (
     AsistenciaCreateView,
     AsistenciaUpdateView,
     AsistenciaDeleteView,
+     CalendarioLaboralList,
+    CalendarioLaboralCreate,
+    CalendarioLaboralUpdate,
+    CalendarioLaboralDelete,
     marcar_entrada,
     marcar_salida,
 )
@@ -49,6 +53,12 @@ urlpatterns = [
     path("asistencias/<int:pk>/eliminar/", AsistenciaDeleteView.as_view(), name="asistencia_delete"),
     path("asistencias/entrada/<int:trabajador_id>/", marcar_entrada, name="marcar_entrada"),
     path("asistencias/salida/<int:trabajador_id>/", marcar_salida, name="marcar_salida"),
+
+    #CALENDARIO LABORAL
+    path("calendario/", CalendarioLaboralList.as_view(), name="calendario_laboral_list"),
+    path("calendario/nuevo/", CalendarioLaboralCreate.as_view(), name="calendario_laboral_create"),
+    path("calendario/<int:pk>/editar/", CalendarioLaboralUpdate.as_view(), name="calendario_laboral_update"),
+    path("calendario/<int:pk>/eliminar/", CalendarioLaboralDelete.as_view(), name="calendario_laboral_delete"),
 
 ]
 
