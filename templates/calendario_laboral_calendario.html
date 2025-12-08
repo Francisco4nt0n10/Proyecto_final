@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Calendario mensual{% endblock %}
+
+{% block content %}
+<h1 class="h4 mb-3">
+    Calendario laboral - {{ nombre_mes }} {{ anio }}
+</h1>
+
+<div class="mb-3">
+    <a href="{% url 'calendario_laboral_calendar' anio=anio_anterior mes=mes_anterior %}"
+       class="btn btn-outline-secondary btn-sm">&laquo; Mes anterior</a>
+    <a href="{% url 'calendario_laboral_calendar' anio=anio_siguiente mes=mes_siguiente %}"
+       class="btn btn-outline-secondary btn-sm float-end">Mes siguiente &raquo;</a>
+</div>
+
+<table class="table table-bordered text-center align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Lun</th>
+            <th>Mar</th>
+            <th>Mié</th>
+            <th>Jue</th>
+            <th>Vie</th>
+            <th>Sáb</th>
+            <th>Dom</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for semana in matrix_semanas %}
+            <tr>
+                {% for dia in semana %}
+                    {% if dia %}
+                        {% with registro=dias_dict|default_if_none:''|dict_get:dia %}
+                        <td class="{% if registro and registro.es_inhabil %}table-danger{% endif %}">
+                            <div class="fw-bold">{{ dia.day }}</div>
+                            {% if registro %}
+                                <small>{{ registro.descripcion }}</small>
+                            {% endif %}
+                        </td>
+                        {% endwith %}
+                    {% else %}
+                        <td class="bg-light"></td>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{% url 'calendario_laboral_list' %}" class="btn btn-secondary">
+    Volver al listado
+</a>
+{% endblock %}
