@@ -1,25 +1,286 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard | Proyecto Final</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin | SCA-B123</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* --- ESTILOS GLOBAL --- */
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f3f4f6; margin: 0; }
+        
+        /* --- BARRA DE NAVEGACIÓN (NAVBAR) --- */
+        .navbar { 
+            background-color: #3b3dbf; /* Color principal de tu barra */
+            color: white; 
+            padding: 0 30px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            height: 60px; /* Altura fija para la barra */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .logo { 
+            font-weight: bold; 
+            font-size: 1.2rem; 
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding-right: 20px;
+        }
+
+        /* Contenedor que agrupa los enlaces principales */
+        .nav-links { 
+            display: flex; 
+            align-items: center;
+            height: 100%;
+            flex-grow: 1; 
+            /* Importante: En tu captura, los enlaces están justificados a la derecha del logo. */
+            /* Si quieres que se queden juntos, no separamos, solo alineamos al inicio */
+            justify-content: flex-start; 
+        }
+
+        .nav-links a { 
+            color: white; 
+            text-decoration: none; 
+            margin-right: 20px; /* Espacio entre enlaces */
+            font-weight: 500;
+            padding: 0 5px; 
+            height: 100%;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.2s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: #4f52d4; /* Color ligeramente más oscuro al pasar el ratón */
+        }
+
+        .nav-links a.active {
+            border-bottom: 3px solid white; /* Indicador para la página activa */
+            margin-bottom: -3px; /* Compensar el borde */
+        }
+        
+        /* Contenedor que agrupa los iconos de usuario y ajustes */
+        .user-icons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-icons a {
+            color: white; 
+            text-decoration: none; 
+            display: flex;
+            align-items: center;
+        }
+
+        .user-icons img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        
+        /* Ajuste para los iconos de ajuste (simulando los que tenías) */
+        .icon-adjust img {
+            width: 25px !important; 
+            height: 25px !important;
+            border: none !important;
+            opacity: 0.8;
+            margin-right: -10px; /* Separación del icono de perfil */
+        }
+
+
+        /* --- CONTENIDO DASHBOARD --- */
+        .dashboard-container { 
+            max-width: 1200px; 
+            margin: 30px auto; 
+            padding: 0 20px; 
+        }
+
+        /* Título */
+        .page-header { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
+        .page-header h1 { color: #1f2937; margin: 0; }
+        .date-display { color: #6b7280; font-size: 1.1rem; }
+
+        /* 1. CARDS DE RESUMEN (KPIs) */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        
+        .stat-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #ccc; transition: transform 0.2s; }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card h3 { margin: 0 0 10px 0; color: #6b7280; font-size: 0.9rem; text-transform: uppercase; }
+        .stat-card .value { font-size: 2.5rem; font-weight: bold; color: #111; }
+        .stat-card .desc { font-size: 0.85rem; color: #6b7280; margin-top: 5px; }
+
+        /* Colores de estado */
+        .border-blue { border-left-color: #3b82f6; }
+        .border-green { border-left-color: #10b981; }
+        .border-red { border-left-color: #ef4444; }
+        .border-purple { border-left-color: #8b5cf6; }
+
+        /* 2. SECCIÓN DIVIDIDA (Gráfico y Lista) */
+        .dashboard-split { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; margin-bottom: 30px; }
+        @media (max-width: 768px) { .dashboard-split { grid-template-columns: 1fr; } }
+
+        .panel { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .panel h2 { margin-top: 0; color: #1f2937; font-size: 1.2rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 15px; margin-bottom: 20px; }
+
+        /* Tabla simple */
+        .mini-table { width: 100%; border-collapse: collapse; }
+        .mini-table th { text-align: left; color: #6b7280; font-size: 0.85rem; padding-bottom: 10px; }
+        .mini-table td { padding: 12px 0; border-bottom: 1px solid #f3f4f6; font-size: 0.95rem; }
+        .user-cell { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 32px; height: 32px; background: #e0e7ff; color: #3730a3; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
+        
+        .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
+        .bg-red { background: #fee2e2; color: #991b1b; }
+        .bg-yellow { background: #fef3c7; color: #92400e; }
+
+    </style>
 </head>
-<body style="font-family: sans-serif; text-align: center; margin-top: 100px; background-color: #f3f4f6;">
-<div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-<h1>¡Bienvenido, {{ user.username }}!</h1>
-<p class="text-lg text-gray-600">Has accedido al Panel de Control de tu aplicación.</p>
+<body>
 
-    <p style="margin-top: 40px;">Esta página está protegida por <code>@login_required</code>.</p>
-    
-    <div style="margin-top: 30px;">
-        <a href="{% url 'account_logout' %}" style="text-decoration: none; padding: 10px 20px; background-color: #EF4444; color: white; border-radius: 5px;">
-            Cerrar Sesión
-        </a>
+    <nav class="navbar">
+        <div class="logo">SCA-B123</div>
+        
+        <div class="nav-links">
+            <a href="/" class="mr-4 hover:underline">Inicio</a>
+            <a href="/trabajadores/">Trabajadores</a>
+            <a href="/unidades/">Unidades</a>
+            <a href="/jornadalaboral/">JornadaLaboral</a>
+            <a href="/asistencia/">Asistencia</a>
+            <a href="/dashboard/" class="active">Dashboard</a>
+        </div>
+        
+        <div class="user-icons">
+            <a href="#" class="icon-adjust">
+                <img src="placeholder_icon_settings.png" alt="Ajustes">
+            </a>
+            <img src="placeholder_profile_pic.jpg" alt="Perfil">
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        
+        <div class="page-header">
+            <div>
+                <h1>Resumen General</h1>
+                <p style="color: #6b7280; margin-top: 5px;">Bienvenido, Administrador</p>
+            </div>
+            <div class="date-display">📅 {{ now|date:"l, d F Y" }}</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card border-blue">
+                <h3>Total Trabajadores</h3>
+                <div class="value">45</div>
+                <div class="desc">👤 Activos en nómina</div>
+            </div>
+
+            <div class="stat-card border-green">
+                <h3>Asistencia Hoy</h3>
+                <div class="value">92%</div>
+                <div class="desc">✅ 41 de 45 presentes</div>
+            </div>
+
+            <div class="stat-card border-red">
+                <h3>Retardos Hoy</h3>
+                <div class="value" style="color: #ef4444;">4</div>
+                <div class="desc">⚠️ Llegaron después de tolerancia</div>
+            </div>
+
+            <div class="stat-card border-purple">
+                <h3>Unidades Admin.</h3>
+                <div class="value">6</div>
+                <div class="desc">🏢 Departamentos registrados</div>
+            </div>
+        </div>
+
+        <div class="dashboard-split">
+            
+            <div class="panel">
+                <h2>⏱️ Actividad Reciente (Tiempo Real)</h2>
+                <table class="mini-table">
+                    <thead>
+                        <tr>
+                            <th>Trabajador</th>
+                            <th>Unidad</th>
+                            <th>Hora</th>
+                            <th>Tipo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <div class="avatar">JP</div>
+                                    <div>Juan Pérez</div>
+                                </div>
+                            </td>
+                            <td>Sistemas</td>
+                            <td>08:05 AM</td>
+                            <td><span style="color: green;">● Entrada</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <div class="avatar">ML</div>
+                                    <div>María Lopez</div>
+                                </div>
+                            </td>
+                            <td>Recursos Humanos</td>
+                            <td>08:12 AM</td>
+                            <td><span style="color: orange;">● Entrada (Tarde)</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <div class="avatar">CR</div>
+                                    <div>Carlos Ruiz</div>
+                                </div>
+                            </td>
+                            <td>Ventas</td>
+                            <td>08:00 AM</td>
+                            <td><span style="color: green;">● Entrada</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="margin-top: 15px; text-align: center;">
+                    <a href="#" style="color: #3b3dbf; text-decoration: none; font-size: 0.9rem;">Ver todos los registros &rarr;</a>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>🔔 Requiere Atención</h2>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    
+                    <div style="display: flex; gap: 10px; align-items: start;">
+                        <div style="background: #fee2e2; padding: 8px; border-radius: 6px; color: #991b1b;">📄</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 0.9rem;">3 Justificantes Pendientes</div>
+                            <div style="font-size: 0.8rem; color: #6b7280;">Solicitudes de enfermedad/permiso.</div>
+                            <a href="#" style="font-size: 0.8rem; color: #3b82f6;">Revisar</a>
+                        </div>
+                    </div>
+
+                    <hr style="border: 0; border-top: 1px solid #f3f4f6; width: 100%;">
+
+                    <div style="display: flex; gap: 10px; align-items: start;">
+                        <div style="background: #fef3c7; padding: 8px; border-radius: 6px; color: #92400e;">⚠️</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 0.9rem;">2 Fichajes sin cierre</div>
+                            <div style="font-size: 0.8rem; color: #6b7280;">De ayer. Verificar manualmente.</div>
+                            <a href="#" style="font-size: 0.8rem; color: #3b82f6;">Corregir</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
     </div>
-</div>
-
 
 </body>
 </html>
