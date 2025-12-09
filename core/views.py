@@ -2,15 +2,16 @@ from django.shortcuts import render,redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from datetime import date
-
+from django.contrib import messages
 
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia
+from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia, CalendarioLaboral, Incidencia
 from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm,RegistroAsistenciaForm
-
+import csv
+from datetime import datetime
 
 # ---------- HOME / DASHBOARD ----------
 
@@ -174,3 +175,129 @@ def marcar_entrada(request, trabajador_id):
     messages.success(request, "Entrada registrada correctamente.")
     return redirect("asistencia_list")
 
+# ---------- Calendario Laboral ----------
+class CalendarioLaboralList(ListView):
+    model = CalendarioLaboral
+    template_name = "calendario_laboral_list.html"
+    context_object_name = "calendarios"
+    ordering = ["fecha"]
+
+
+class CalendarioLaboralCreate(CreateView):
+    model = CalendarioLaboral
+    fields = ["fecha", "es_inhabil", "descripcion"]
+    template_name = "calendario_laboral_form.html"
+    success_url = reverse_lazy("calendario_laboral_list")
+
+
+class CalendarioLaboralUpdate(UpdateView):
+    model = CalendarioLaboral
+    fields = ["fecha", "es_inhabil", "descripcion"]
+    template_name = "calendario_laboral_form.html"
+    success_url = reverse_lazy("calendario_laboral_list")
+
+
+class CalendarioLaboralDelete(DeleteView):
+    model = CalendarioLaboral
+    template_name = "calendario_laboral_delete.html"   
+    success_url = reverse_lazy("calendario_laboral_list")
+
+
+# ====== INCIDENCIAS ======
+
+class IncidenciaListView(LoginRequiredMixin, ListView):
+    model = Incidencia
+    template_name = "incidencia_list.html"
+    context_object_name = "incidencias"
+
+    def get_queryset(self):
+        # Para no hacer demasiadas consultas
+        return (
+            Incidencia.objects
+            .select_related("trabajador", "tipo_incidencia", "autorizada_por")
+            .order_by("-fecha_inicio")
+        )
+
+
+class IncidenciaCreateView(LoginRequiredMixin, CreateView):
+    model = Incidencia
+    fields = ["trabajador", "tipo_incidencia", "fecha_inicio", "fecha_fin", "observaciones"]
+    template_name = "incidencia_form.html"
+    success_url = reverse_lazy("incidencia_list")
+
+    def form_valid(self, form):
+        # El usuario logueado queda como quien autoriza
+        form.instance.autorizada_por = self.request.user
+        return super().form_valid(form)
+
+
+class IncidenciaUpdateView(LoginRequiredMixin, UpdateView):
+    model = Incidencia
+    fields = ["trabajador", "tipo_incidencia", "fecha_inicio", "fecha_fin", "observaciones"]
+    template_name = "incidencia_form.html"
+    success_url = reverse_lazy("incidencia_list")
+
+
+class IncidenciaDeleteView(LoginRequiredMixin, DeleteView):
+    model = Incidencia
+    template_name = "incidencia_delete.html"
+    success_url = reverse_lazy("incidencia_list")
+
+def reporte_asistencia(request):
+    trabajadores = Trabajador.objects.all()
+    unidades = UnidadAdministrativa.objects.all()
+
+    #Obtener los filtros con el GET
+    trabajador_id = request.GET.get("trabajador")
+    unidad_id = request.GET.get("unidad")
+    fecha_inicio = request.GET.get("fecha_inicio")
+    fecha_fin = request.GET.get("fecha_fin")
+
+    registros = RegistroAsistencia.objects.all()
+
+    if trabajador_id:
+        registros = registros.filter(id_trabajador=trabajador_id)
+
+    if unidad_id:
+        registros = registros.filter(id_trabajador__id_unidad=unidad_id)
+
+    if fecha_inicio:
+        registros = registros.filter(fecha__gte=fecha_inicio)
+
+    if fecha_fin:
+        registros = registros.filter(fecha__lte=fecha_fin)
+
+    #Exportación CSV
+    if "export_csv" in request.GET:
+        return exportar_csv(registros)
+
+    return render(request, "reportes/reporte_asistencia.html", {
+        "trabajadores": trabajadores,
+        "unidades": unidades,
+        "registros": registros,
+    })
+
+
+def exportar_csv(queryset):
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = "attachment; filename=reporte_asistencia.csv"
+
+    writer = csv.writer(response)
+    writer.writerow([
+        "Trabajador",
+        "Fecha",
+        "Hora Entrada",
+        "Hora Salida",
+        "Estatus",
+    ])
+
+    for r in queryset:
+        writer.writerow([
+            str(r.id_trabajador),
+            r.fecha,
+            r.hora_entrada,
+            r.hora_salida,
+            r.estatus,
+        ])
+
+    return response

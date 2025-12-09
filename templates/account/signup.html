@@ -1,20 +1,158 @@
+{% load socialaccount %}
+{% load account %}
+
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Registro</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión Profesional</title>
+    
+    <style>
+        /* ------------------ ESTILOS BASE Y FONDO ------------------ */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px 0;
+        }
+
+        /* ------------------ ESTILOS DEL CONTENEDOR (CARD) - GENÉRICO ------------------ */
+        .auth-card {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        /* ------------------ TÍTULO ------------------ */
+        h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        /* ------------------ ESTILOS DE FORMULARIOS ------------------ */
+        form p {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        form ul { /* Oculta bullets de las validaciones de contraseña */
+            list-style: disc inside;
+            padding-left: 15px;
+            margin: -10px 0 15px 0;
+            color: #555;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        /* ------------------ ESTILOS DE ENFOQUE POR PÁGINA ------------------ */
+        /* Login y Enlaces */
+        input:focus {
+            border-color: #007bff; /* Azul */
+            outline: none;
+        }
+        
+        /* Botón de Login */
+        .btn-primary {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background-color: #007bff; /* Azul */
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        /* Enlaces secundarios */
+        .extra-links a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 5px 0;
+            display: block;
+            font-size: 15px;
+        }
+
+        .extra-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* ------------------ ESTILOS DE BOTÓN VERDE (Registro) ------------------ */
+        .btn-success {
+            background-color: #28a745; /* Verde */
+        }
+        .btn-success:hover {
+            background-color: #1e7e34;
+        }
+
+        /* ------------------ ESTILOS DE BOTÓN NARANJA (Recuperación) ------------------ */
+        .btn-warning {
+            background-color: #ff9800; /* Naranja */
+        }
+        .btn-warning:hover {
+            background-color: #e68a00;
+        }
+
+        .instruction-text {
+            color: #777;
+            margin-bottom: 30px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+    </style>
 </head>
-<body style="font-family: sans-serif; text-align: center; margin-top: 100px;">
+<body>
 
-<h2>Crear Cuenta</h2>
+<div class="auth-card">
+    <h2>Iniciar sesión</h2>
 
-<form method="POST" action="{% url 'account_signup' %}">
-    {% csrf_token %}
-    {{ form.as_p }}
+    <form method="POST" action="{% url 'account_login' %}">
+        {% csrf_token %}
+        
+        {{ form.as_p }}
 
-    <button type="submit" style="text-decoration: none; padding: 5px 10px; background-color: #25df92; color: white; border-radius: 5px; margin: 10px;">Registra Cuenta</button>
-</form>
+        <button type="submit" class="btn-primary">Entrar</button>
+    </form>
 
-<p>¿Ya tienes cuenta? <a href="{% url 'account_login' %}">Inicia sesión, Aqui!</a></p>
+    <div class="extra-links" style="margin-top: 30px;">
+        <p>¿No tienes cuenta? <a href="{% url 'account_signup' %}">Regístrate aquí</a></p>
+        <p><a href="{% url 'account_reset_password' %}">¿Olvidaste tu contraseña?</a></p>
+    </div>
+</div>
 
 </body>
 </html>

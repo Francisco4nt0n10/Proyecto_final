@@ -18,8 +18,17 @@ from .views import (
     AsistenciaCreateView,
     AsistenciaUpdateView,
     AsistenciaDeleteView,
+     CalendarioLaboralList,
+    CalendarioLaboralCreate,
+    CalendarioLaboralUpdate,
+    CalendarioLaboralDelete,
+    IncidenciaListView,
+    IncidenciaCreateView,
+    IncidenciaUpdateView,
+    IncidenciaDeleteView,
     marcar_entrada,
     marcar_salida,
+    reporte_asistencia
 )
 
 urlpatterns = [
@@ -49,6 +58,19 @@ urlpatterns = [
     path("asistencias/<int:pk>/eliminar/", AsistenciaDeleteView.as_view(), name="asistencia_delete"),
     path("asistencias/entrada/<int:trabajador_id>/", marcar_entrada, name="marcar_entrada"),
     path("asistencias/salida/<int:trabajador_id>/", marcar_salida, name="marcar_salida"),
+    path("reportes/asistencia/", reporte_asistencia, name="reporte_asistencia"),
 
+
+    # CALENDARIO LABORAL
+    path("calendario/", CalendarioLaboralList.as_view(), name="calendario_laboral_list"),
+    path("calendario/nuevo/", CalendarioLaboralCreate.as_view(), name="calendario_laboral_create"),
+    path("calendario/<int:pk>/editar/", CalendarioLaboralUpdate.as_view(), name="calendario_laboral_update"),
+    path("calendario/<int:pk>/eliminar/", CalendarioLaboralDelete.as_view(), name="calendario_laboral_delete"),
+
+    # INCIDENCIAS
+    path("incidencias/", IncidenciaListView.as_view(), name="incidencia_list"),
+    path("incidencias/nueva/", IncidenciaCreateView.as_view(), name="incidencia_create"),
+    path("incidencias/<int:pk>/editar/", IncidenciaUpdateView.as_view(), name="incidencia_update"),
+    path("incidencias/<int:pk>/eliminar/", IncidenciaDeleteView.as_view(), name="incidencia_delete"),
 ]
 

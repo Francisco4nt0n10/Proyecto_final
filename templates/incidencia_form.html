@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h1 class="h5 mb-3">
+            {% if object %}Editar incidencia{% else %}Registrar incidencia{% endif %}
+        </h1>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">Trabajador</label>
+                {{ form.trabajador }}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tipo de incidencia</label>
+                {{ form.tipo_incidencia }}
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fecha inicio</label>
+                    {{ form.fecha_inicio }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Fecha fin</label>
+                    {{ form.fecha_fin }}
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Observaciones</label>
+                {{ form.observaciones }}
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'incidencia_list' %}" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

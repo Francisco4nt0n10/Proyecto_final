@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4">Incidencias</h1>
+    <a href="{% url 'incidencia_create' %}" class="btn btn-primary btn-sm">
+        Nueva incidencia
+    </a>
+</div>
+
+<table class="table table-striped table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Trabajador</th>
+            <th>Tipo</th>
+            <th>Inicio</th>
+            <th>Fin</th>
+            <th>Autorizada por</th>
+            <th class="text-end">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for incidencia in incidencias %}
+            <tr>
+                <td>{{ incidencia.trabajador }}</td>
+                <td>{{ incidencia.tipo_incidencia.descripcion }}</td>
+                <td>{{ incidencia.fecha_inicio }}</td>
+                <td>{{ incidencia.fecha_fin|default:"-" }}</td>
+                <td>{{ incidencia.autorizada_por.username|default:"Sin autorizar" }}</td>
+                <td class="text-end">
+                    <a href="{% url 'incidencia_update' incidencia.id %}"
+                       class="btn btn-sm btn-outline-secondary">
+                        Editar
+                    </a>
+                    <a href="{% url 'incidencia_delete' incidencia.id %}"
+                       class="btn btn-sm btn-outline-danger">
+                        Eliminar
+                    </a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No hay incidencias registradas.</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

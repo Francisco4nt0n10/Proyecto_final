@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import TipoIncidencia, Incidencia
 
-# Register your models here.
+admin.site.register(TipoIncidencia)
+admin.site.register(Incidencia)
