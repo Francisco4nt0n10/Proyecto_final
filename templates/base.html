@@ -5,29 +5,46 @@
     <title>{% block title %}Sistema de Control de Asistencia{% endblock %}</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
+    {% block extra_head %}{% endblock %}
 </head>
 <body class="bg-gray-100 min-h-screen">
 
-    <!-- Barra superior simple -->
+    <!-- Barra superior -->
     <nav class="bg-indigo-700 text-white px-6 py-3 mb-6">
         <div class="flex justify-between items-center">
             <div class="font-semibold">
                 SCA-B123
             </div>
-            <div>
-                <a href="/" class="mr-4 hover:underline">Inicio</a>
-                <a href="/trabajadores/" class="mr-4 hover:underline">Trabajadores</a>
-                <a href="/unidades/" class="mr-4 hover:underline">Unidades</a>
-                <a href="/JornadaLaboral/" class="mr-4 hover:underline">JornadaLaboral</a>
-                <a href="/Asistencia/" class="mr-4 hover:underline">Asistencia</a>
-                <a href="{% url 'incidencia_list' %}" class="mr-4 hover:underline">Incidencias</a>
-                <a href="/dashboard/" class="hover:underline">Dashboard</a>
+
+            <div class="flex items-center gap-4 text-sm">
+                <a href="{% url 'home' %}" class="hover:underline">Inicio</a>
+
+                {% if user.is_authenticated %}
+                    <a href="{% url 'trabajador_list' %}" class="hover:underline">Trabajadores</a>
+                    <a href="{% url 'unidad_list' %}" class="hover:underline">Unidades</a>
+                    <a href="{% url 'jornada_list' %}" class="hover:underline">Jornadas</a>
+                    <a href="{% url 'asistencia_list' %}" class="hover:underline">Asistencia</a>
+                    <a href="{% url 'incidencia_list' %}" class="hover:underline">Incidencias</a>
+                    <a href="{% url 'calendario_laboral_list' %}" class="hover:underline">Calendario</a>
+                    <a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a>
+
+                    <!-- Logout como botón pequeño -->
+                    <form method="post" action="{% url 'account_logout' %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="ml-2 bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs">
+                            Cerrar sesión
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'account_login' %}" class="hover:underline">Iniciar sesión</a>
+                    <a href="{% url 'account_signup' %}" class="hover:underline">Registrarse</a>
+                {% endif %}
             </div>
         </div>
     </nav>
 
     <!-- Contenido principal -->
-    <main class="container mx-auto px-4">
+    <main class="container mx-auto px-4 py-6">
         {% block content %}
         {% endblock %}
     </main>

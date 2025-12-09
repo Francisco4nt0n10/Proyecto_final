@@ -11,6 +11,8 @@ from .models import (
     JornadaLaboral,
     RegistroAsistencia,
     CalendarioLaboral,
+    TipoIncidencia,
+    Incidencia,
 )
 
 
@@ -418,3 +420,121 @@ class CalendarioLaboralViewsTests(TestCase):
         self.assertFalse(
             CalendarioLaboral.objects.filter(id=self.dia.id).exists()
         )
+
+    #   PRUEBAS INCIDENCIAS
+class IncidenciaTests(BaseTestCase):
+
+    def setUp(self):
+        super().setUp()
+
+        # Catálogos necesarios para crear un trabajador
+        self.unidad = UnidadAdministrativa.objects.create(
+            nombre="Unidad Pruebas",
+            descripcion="Unidad para incidencias",
+        )
+        self.puesto = Puesto.objects.create(
+            nombre_puesto="Analista",
+            nivel="A1",
+        )
+        self.tipoNombramiento = TipoNombramiento.objects.create(
+            descripcion="Base",
+        )
+
+        # Trabajador al que se le registrarán incidencias
+        self.trabajador = Trabajador.objects.create(
+            numero_empleado="INC001",
+            nombre="Luis",
+            apellido_paterno="García",
+            apellido_materno="López",
+            rfc="GALL900101XXX",
+            curp="GALL900101HDFXXX01",
+            unidad_administrativa=self.unidad,
+            puesto=self.puesto,
+            tipo_nombramiento=self.tipoNombramiento,
+            activo=True,
+        )
+
+        # Tipo de incidencia de catálogo
+        self.tipoIncidencia = TipoIncidencia.objects.create(
+            descripcion="Falta"
+        )
+
+    def test_incidencia_list_requires_login(self):
+        clienteAnon = Client()
+        respuesta = clienteAnon.get(reverse("incidencia_list"))
+        self.assertEqual(respuesta.status_code, 302)  # redirige a login
+
+    def test_incidencia_list_ok(self):
+        respuesta = self.clientDjango.get(reverse("incidencia_list"))
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertTemplateUsed(respuesta, "incidencia_list.html")
+
+    def test_incidencia_create_crea_registro(self):
+        datos = {
+            "trabajador": self.trabajador.id,
+            "tipo_incidencia": self.tipoIncidencia.id,
+            "fecha_inicio": "2025-01-10",
+            "fecha_fin": "2025-01-10",
+            "observaciones": "Falta injustificada",
+        }
+
+        respuesta = self.clientDjango.post(
+            reverse("incidencia_create"),
+            datos,
+        )
+
+        self.assertEqual(respuesta.status_code, 302)
+        self.assertEqual(Incidencia.objects.count(), 1)
+
+        incidencia = Incidencia.objects.first()
+        self.assertEqual(incidencia.trabajador, self.trabajador)
+        self.assertEqual(incidencia.tipo_incidencia, self.tipoIncidencia)
+        self.assertEqual(incidencia.observaciones, "Falta injustificada")
+        # Debe quedar marcada con el usuario que inició sesión
+        self.assertEqual(incidencia.autorizada_por, self.user)
+
+    def test_incidencia_update_actualiza_registro(self):
+        incidencia = Incidencia.objects.create(
+            trabajador=self.trabajador,
+            tipo_incidencia=self.tipoIncidencia,
+            fecha_inicio="2025-01-15",
+            fecha_fin="2025-01-15",
+            observaciones="Permiso personal",
+            autorizada_por=self.user,
+        )
+
+        datos = {
+            "trabajador": self.trabajador.id,
+            "tipo_incidencia": self.tipoIncidencia.id,
+            "fecha_inicio": "2025-01-15",
+            "fecha_fin": "2025-01-16",
+            "observaciones": "Permiso actualizado",
+        }
+
+        respuesta = self.clientDjango.post(
+            reverse("incidencia_update", args=[incidencia.id]),
+            datos,
+        )
+        self.assertEqual(respuesta.status_code, 302)
+
+        incidencia.refresh_from_db()
+        self.assertEqual(incidencia.observaciones, "Permiso actualizado")
+        self.assertEqual(str(incidencia.fecha_fin), "2025-01-16")
+
+    def test_incidencia_delete_elimina_registro(self):
+        incidencia = Incidencia.objects.create(
+            trabajador=self.trabajador,
+            tipo_incidencia=self.tipoIncidencia,
+            fecha_inicio="2025-02-01",
+            fecha_fin="2025-02-01",
+            observaciones="Incapacidad",
+            autorizada_por=self.user,
+        )
+        self.assertEqual(Incidencia.objects.count(), 1)
+
+        respuesta = self.clientDjango.post(
+            reverse("incidencia_delete", args=[incidencia.id])
+        )
+
+        self.assertEqual(respuesta.status_code, 302)
+        self.assertEqual(Incidencia.objects.count(), 0)
