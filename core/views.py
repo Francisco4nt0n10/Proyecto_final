@@ -10,6 +10,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia, CalendarioLaboral, Incidencia
 from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm,RegistroAsistenciaForm
+from django.http import HttpResponse
 import csv
 from datetime import datetime
 
@@ -271,29 +272,28 @@ def reporte_asistencia(request):
     if "export_csv" in request.GET:
         return exportar_csv(registros)
 
-    return render(request, "reportes/reporte_asistencia.html", {
+    return render(request, "reporte_asistencia.html", {
         "trabajadores": trabajadores,
         "unidades": unidades,
         "registros": registros,
     })
 
 
-def exportar_csv(queryset):
-    response = HttpResponse(content_type="text/csv")
-    response["Content-Disposition"] = "attachment; filename=reporte_asistencia.csv"
+def exportar_csv(registros):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="reporte_asistencia.csv"'
 
     writer = csv.writer(response)
-    writer.writerow([
-        "Trabajador",
-        "Fecha",
-        "Hora Entrada",
-        "Hora Salida",
-        "Estatus",
-    ])
 
-    for r in queryset:
+    writer.writerow(["Trabajador", "Fecha", "Hora Entrada", "Hora Salida", "Estatus"])
+
+    if not registros:
+        writer.writerow(["SIN DATOS", "", "", "", ""])
+        return response
+
+    for r in registros:
         writer.writerow([
-            str(r.id_trabajador),
+            r.trabajador.nombre if r.trabajador else "",
             r.fecha,
             r.hora_entrada,
             r.hora_salida,
