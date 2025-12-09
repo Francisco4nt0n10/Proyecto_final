@@ -28,6 +28,7 @@ from .views import (
     IncidenciaDeleteView,
     marcar_entrada,
     marcar_salida,
+    reporte_asistencia
 )
 
 urlpatterns = [
@@ -57,6 +58,8 @@ urlpatterns = [
     path("asistencias/<int:pk>/eliminar/", AsistenciaDeleteView.as_view(), name="asistencia_delete"),
     path("asistencias/entrada/<int:trabajador_id>/", marcar_entrada, name="marcar_entrada"),
     path("asistencias/salida/<int:trabajador_id>/", marcar_salida, name="marcar_salida"),
+    path("reportes/asistencia/", reporte_asistencia, name="reporte_asistencia"),
+
 
     # CALENDARIO LABORAL
     path("calendario/", CalendarioLaboralList.as_view(), name="calendario_laboral_list"),

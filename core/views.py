@@ -10,7 +10,8 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia, CalendarioLaboral, Incidencia
 from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm,RegistroAsistenciaForm
-
+import csv
+from datetime import datetime
 
 # ---------- HOME / DASHBOARD ----------
 
@@ -241,3 +242,62 @@ class IncidenciaDeleteView(LoginRequiredMixin, DeleteView):
     model = Incidencia
     template_name = "incidencia_delete.html"
     success_url = reverse_lazy("incidencia_list")
+
+def reporte_asistencia(request):
+    trabajadores = Trabajador.objects.all()
+    unidades = UnidadAdministrativa.objects.all()
+
+    #Obtener los filtros con el GET
+    trabajador_id = request.GET.get("trabajador")
+    unidad_id = request.GET.get("unidad")
+    fecha_inicio = request.GET.get("fecha_inicio")
+    fecha_fin = request.GET.get("fecha_fin")
+
+    registros = RegistroAsistencia.objects.all()
+
+    if trabajador_id:
+        registros = registros.filter(id_trabajador=trabajador_id)
+
+    if unidad_id:
+        registros = registros.filter(id_trabajador__id_unidad=unidad_id)
+
+    if fecha_inicio:
+        registros = registros.filter(fecha__gte=fecha_inicio)
+
+    if fecha_fin:
+        registros = registros.filter(fecha__lte=fecha_fin)
+
+    #Exportación CSV
+    if "export_csv" in request.GET:
+        return exportar_csv(registros)
+
+    return render(request, "reportes/reporte_asistencia.html", {
+        "trabajadores": trabajadores,
+        "unidades": unidades,
+        "registros": registros,
+    })
+
+
+def exportar_csv(queryset):
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = "attachment; filename=reporte_asistencia.csv"
+
+    writer = csv.writer(response)
+    writer.writerow([
+        "Trabajador",
+        "Fecha",
+        "Hora Entrada",
+        "Hora Salida",
+        "Estatus",
+    ])
+
+    for r in queryset:
+        writer.writerow([
+            str(r.id_trabajador),
+            r.fecha,
+            r.hora_entrada,
+            r.hora_salida,
+            r.estatus,
+        ])
+
+    return response
