@@ -1,120 +1,147 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenido | Sistema de Asistencia - ITCG</title>
-    
-    <style>
-        /* ------------------ ESTILOS BASE Y FONDO ------------------ */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6; /* Fondo gris claro suave */
-            display: flex;
-            justify-content: center; /* Centra horizontalmente */
-            align-items: center;     /* Centra verticalmente */
-            min-height: 100vh;       /* Ocupa toda la altura de la vista */
-            margin: 0;
-            text-align: center;
-        }
+{% extends "base.html" %}
 
-        /* ------------------ ESTILOS DEL CONTENEDOR (CARD) ------------------ */
-        .home-card {
-            background-color: white;
-            padding: 50px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Sombra más profunda y profesional */
-            width: 100%;
-            max-width: 600px; /* Ancho cómodo para una página de bienvenida */
-        }
+{% block title %}Bienvenido | Sistema de Asistencia - ITCG{% endblock %}
 
-        /* ------------------ TÍTULO Y ESlogan ------------------ */
-        h1 {
-            color: #1a1a1a;
-            margin-bottom: 10px;
-            font-size: 32px;
-            font-weight: 700;
-        }
+{% block extra_head %}
+<style>
+    /* ------------------ ESTILOS BASE Y FONDO ------------------ */
+    .home-body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f7f6;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 60vh;
+        margin: 0;
+        text-align: center;
+    }
 
-        .subtitle {
-            color: #007bff; /* Color principal para destacar */
-            margin-bottom: 30px;
-            font-size: 18px;
-            font-weight: 500;
-        }
+    /* ------------------ ESTILOS DEL CONTENEDOR (CARD) ------------------ */
+    .home-card {
+        background-color: white;
+        padding: 50px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        width: 100%;
+        max-width: 600px;
+        margin-top: 40px;
+    }
 
-        .description {
-            color: #555;
-            margin-bottom: 40px;
-            font-size: 16px;
-            line-height: 1.6;
-        }
+    /* ------------------ TÍTULO Y ESLOGAN ------------------ */
+    h1 {
+        color: #1a1a1a;
+        margin-bottom: 10px;
+        font-size: 32px;
+        font-weight: 700;
+    }
 
-        /* ------------------ ESTILOS DE BOTONES ------------------ */
-        .btn-group {
-            margin-top: 30px;
-        }
+    .subtitle {
+        color: #007bff;
+        margin-bottom: 30px;
+        font-size: 18px;
+        font-weight: 500;
+    }
 
-        .btn {
-            display: inline-block;
-            text-decoration: none;
-            padding: 12px 25px;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            margin: 0 10px;
-            min-width: 150px;
-            transition: all 0.3s ease;
-        }
+    .description {
+        color: #555;
+        margin-bottom: 40px;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    /* ------------------ BOTONES ------------------ */
+    .btn-group {
+        margin-top: 30px;
+    }
+
+    .btn {
+        display: inline-block;
+        text-decoration: none;
+        padding: 12px 25px;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0 10px;
+        min-width: 150px;
+        transition: all 0.3s ease;
+    }
+
+    /* Botón Iniciar Sesión (Azul) */
+    .btn-login {
+        background-color: #007bff;
+        color: white;
+        border: 2px solid #007bff;
+    }
+
+    .btn-login:hover {
+        background-color: #0056b3;
+        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
+    }
+
+    /* Botón Registrarse (Verde) */
+    .btn-signup {
+        background-color: #28a745;
+        color: white;
+        border: 2px solid #28a745;
+    }
+
+    .btn-signup:hover {
+        background-color: #1e7e34;
+        box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4);
+    }
+
+    /* Botón Dashboard (Morado) */
+    .btn-dashboard {
+        background-color: #6f42c1;
+        color: white;
+        border: 2px solid #6f42c1;
+    }
+
+    .btn-dashboard:hover {
+        background-color: #59339d;
+        box-shadow: 0 4px 10px rgba(111, 66, 193, 0.4);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="home-body">
+
+    <div class="home-card">
         
-        /* Botón Iniciar Sesión (Azul - Primario) */
-        .btn-login {
-            background-color: #007bff;
-            color: white;
-            border: 2px solid #007bff;
-        }
+        <h1>Sistema de Control de Asistencia</h1>
         
-        .btn-login:hover {
-            background-color: #0056b3;
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
-        }
+        <p class="subtitle">ITCG | Ingeniería en Informática</p>
 
-        /* Botón Registrarse (Verde - Acción) */
-        .btn-signup {
-            background-color: #28a745;
-            color: white;
-            border: 2px solid #28a745;
-        }
-        
-        .btn-signup:hover {
-            background-color: #1e7e34;
-            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4);
-        }
-    </style>
-</head>
-<body>
+        <p class="description">
+            Una solución moderna y eficiente para el registro y gestión de la asistencia del personal,
+            desarrollada como Proyecto Final de la materia Desarrollo de Plataformas Web.
+        </p>
 
-<div class="home-card">
-    
-    <h1>Sistema de Control de Asistencia</h1>
-    
-    <p class="subtitle">ITCG | Ingeniería en Informática</p>
+        <div class="btn-group">
 
-    <p class="description">
-        Una solución moderna y eficiente para el registro y gestión de la asistencia del personal, desarrollada como Proyecto Final de la materia Desarrollo de Plataformas Web.
-    </p>
+            {% if user.is_authenticated %}
 
-    <div class="btn-group">
-        <a href="{% url 'account_login' %}" class="btn btn-login">
-            Iniciar Sesión
-        </a>
-        
-        <a href="{% url 'account_signup' %}" class="btn btn-signup">
-            Registrarse
-        </a>
+                <a href="{% url 'dashboard' %}" class="btn btn-dashboard">
+                    Ir al Dashboard
+                </a>
+
+            {% else %}
+
+                <a href="{% url 'account_login' %}" class="btn btn-login">
+                    Iniciar Sesión
+                </a>
+
+                <a href="{% url 'account_signup' %}" class="btn btn-signup">
+                    Registrarse
+                </a>
+
+            {% endif %}
+        </div>
+
     </div>
 
 </div>
 
-</body>
-</html>
+{% endblock %}

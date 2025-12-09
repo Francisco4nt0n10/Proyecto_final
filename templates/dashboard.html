@@ -1,25 +1,136 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard | Proyecto Final</title>
-</head>
-<body style="font-family: sans-serif; text-align: center; margin-top: 100px; background-color: #f3f4f6;">
-<div style="max-width: 600px; margin: 0 auto; background-color: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-<h1>¡Bienvenido, {{ user.username }}!</h1>
-<p class="text-lg text-gray-600">Has accedido al Panel de Control de tu aplicación.</p>
+{% block title %}Dashboard | Sistema de Asistencia{% endblock %}
 
-    <p style="margin-top: 40px;">Esta página está protegida por <code>@login_required</code>.</p>
-    
-    <div style="margin-top: 30px;">
-        <a href="{% url 'account_logout' %}" style="text-decoration: none; padding: 10px 20px; background-color: #EF4444; color: white; border-radius: 5px;">
-            Cerrar Sesión
+{% block content %}
+
+<style>
+    .dashboard-card {
+        background: white;
+        padding: 40px;
+        border-radius: 16px;
+        max-width: 900px;
+        margin: auto;
+        text-align: center;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.10);
+    }
+
+    .dashboard-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: #222;
+        margin-bottom: 10px;
+    }
+
+    .dashboard-subtitle {
+        color: #555;
+        font-size: 16px;
+        margin-bottom: 25px;
+    }
+
+    /* -------- TARJETAS DE ACCIONES -------- */
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 30px;
+    }
+
+    .card {
+        width: 250px;
+        background: #ffffff;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        transition: all .3s ease;
+        text-decoration: none;
+        color: #333;
+        font-weight: 600;
+    }
+
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+    }
+
+    .card-title {
+        font-size: 18px;
+        margin-bottom: 8px;
+        color: #007bff;
+    }
+
+    .card-desc {
+        font-size: 14px;
+        color: #555;
+    }
+
+    .btn-logout {
+        margin-top: 25px;
+        background: #dc3545;
+        color: #fff;
+        padding: 12px 20px;
+        border-radius: 6px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        transition: .3s;
+    }
+
+    .btn-logout:hover {
+        background: #a72834;
+        box-shadow: 0 4px 10px rgba(220,53,69,0.4);
+    }
+
+</style>
+
+<div class="dashboard-card">
+
+    <h1 class="dashboard-title">¡Bienvenido, {{ user.username }}!</h1>
+
+    <p class="dashboard-subtitle">
+        Has accedido al Panel de Control del Sistema de Control de Asistencia.
+    </p>
+
+    <div class="card-container">
+
+        <a href="{% url 'trabajador_list' %}" class="card">
+            <div class="card-title">Trabajadores</div>
+            <div class="card-desc">Gestiona el catálogo del personal.</div>
         </a>
+
+        <a href="{% url 'asistencia_list' %}" class="card">
+            <div class="card-title">Asistencia</div>
+            <div class="card-desc">Registra y revisa asistencias.</div>
+        </a>
+
+        <a href="{% url 'incidencia_list' %}" class="card">
+            <div class="card-title">Incidencias</div>
+            <div class="card-desc">Consulta y administra reportes.</div>
+        </a>
+
+        <a href="{% url 'calendario_laboral_list' %}" class="card">
+            <div class="card-title">Calendario Laboral</div>
+            <div class="card-desc">Visualiza festivos y jornadas.</div>
+        </a>
+
+        <a href="{% url 'unidad_list' %}" class="card">
+            <div class="card-title">Unidades</div>
+            <div class="card-desc">Administra unidades administrativas.</div>
+        </a>
+
+        <a href="{% url 'jornada_list' %}" class="card">
+            <div class="card-title">Jornadas Laborales</div>
+            <div class="card-desc">Consulta horarios y turnos.</div>
+        </a>
+
     </div>
+
+    <form method="post" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        <button class="btn-logout">Cerrar Sesión</button>
+    </form>
+
 </div>
 
-
-</body>
-</html>
+{% endblock %}
