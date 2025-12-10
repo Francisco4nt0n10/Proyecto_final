@@ -140,7 +140,7 @@
 <div class="auth-card">
     <h2>Iniciar sesión</h2>
 
-    <form method="POST" action="{% url 'account_login' %}">
+    <form method="POST" action="{% url 'account_signup' %}">
         {% csrf_token %}
         
         {{ form.as_p }}

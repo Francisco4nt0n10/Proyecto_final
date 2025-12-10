@@ -12,8 +12,9 @@ from django.http import HttpResponse # Importado del lado HEAD para exportar CSV
 # Se incluyen todos los modelos de ambos lados del conflicto:
 from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia, CalendarioLaboral, Incidencia,TipoIncidencia,TipoNombramiento,Puesto
 # Se incluyen todos los formularios de ambos lados del conflicto:
-from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm,RegistroAsistenciaForm,TipoIncidenciaForm,TipoNombramientoForm,PuestoForm
 
+from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm,RegistroAsistenciaForm,TipoIncidenciaForm,TipoNombramientoForm,PuestoForm
+from .forms import CalendarioLaboralForm
 import csv
 from datetime import datetime
 
@@ -189,7 +190,7 @@ class CalendarioLaboralList(ListView):
 
 class CalendarioLaboralCreate(CreateView):
     model = CalendarioLaboral
-    fields = ["fecha", "es_inhabil", "descripcion"]
+    form_class = CalendarioLaboralForm
     template_name = "calendario_laboral_form.html"
     success_url = reverse_lazy("calendario_laboral_list")
 
