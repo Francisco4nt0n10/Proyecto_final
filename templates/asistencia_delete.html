@@ -1,30 +1,52 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="text-danger">Confirmar eliminación</h2>
-    <hr>
+<div class="max-w-xl mx-auto mt-14 bg-white p-8 rounded-xl shadow-lg border border-gray-200">
 
-    <p>
+    <h2 class="text-2xl font-bold text-red-700 mb-4 flex items-center gap-2">
+        ⚠️ Confirmar eliminación
+    </h2>
+
+    <p class="text-gray-700 mb-4">
         ¿Estás seguro de que deseas eliminar este registro de asistencia?
     </p>
 
-    <ul>
-        <li><strong>Trabajador:</strong> {{ object.trabajador }}</li>
-        <li><strong>Fecha:</strong> {{ object.fecha }}</li>
-        <li><strong>Entrada:</strong> {{ object.hora_entrada|default:"---" }}</li>
-        <li><strong>Salida:</strong> {{ object.hora_salida|default:"---" }}</li>
-        <li><strong>Estatus:</strong> {{ object.estatus }}</li>
+    <ul class="mb-6 divide-y divide-gray-200 border border-gray-200 rounded-lg">
+        <li class="px-4 py-2">
+            <strong class="text-gray-800">Trabajador:</strong>
+            <span class="ml-1 text-gray-700">{{ object.trabajador }}</span>
+        </li>
+        <li class="px-4 py-2">
+            <strong class="text-gray-800">Fecha:</strong>
+            <span class="ml-1 text-gray-700">{{ object.fecha }}</span>
+        </li>
+        <li class="px-4 py-2">
+            <strong class="text-gray-800">Entrada:</strong>
+            <span class="ml-1 text-gray-700">{{ object.hora_entrada|default:"---" }}</span>
+        </li>
+        <li class="px-4 py-2">
+            <strong class="text-gray-800">Salida:</strong>
+            <span class="ml-1 text-gray-700">{{ object.hora_salida|default:"---" }}</span>
+        </li>
+        <li class="px-4 py-2">
+            <strong class="text-gray-800">Estatus:</strong>
+            <span class="ml-1 text-gray-700">{{ object.estatus }}</span>
+        </li>
     </ul>
 
-    <form method="post">
+    <form method="post" class="flex justify-between items-center">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger">
+
+        <button type="submit"
+            class="px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition focus:ring-2 focus:ring-red-400">
             Sí, eliminar
         </button>
-        <a href="{% url 'asistencia_list' %}" class="btn btn-secondary">
+
+        <a href="{% url 'asistencia_list' %}"
+           class="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-md hover:bg-gray-300 transition">
             Cancelar
         </a>
     </form>
+
 </div>
 {% endblock %}
