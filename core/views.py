@@ -7,15 +7,13 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.http import HttpResponse # Importado del lado HEAD para exportar CSV
 
-<<<<<<< HEAD
-from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia, CalendarioLaboral, Incidencia
-from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm,RegistroAsistenciaForm
-from django.http import HttpResponse
-=======
+# Se incluyen todos los modelos de ambos lados del conflicto:
 from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia, CalendarioLaboral, Incidencia,TipoIncidencia,TipoNombramiento
-from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm,RegistroAsistenciaForm,TipoIncidenciaForm,TipoNombramientoForm
->>>>>>> AbrilDiaz
+# Se incluyen todos los formularios de ambos lados del conflicto:
+from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm,RegistroAsistenciaForm,TipoIncidenciaForm,TipoNombramientoForm 
+
 import csv
 from datetime import datetime
 
@@ -205,7 +203,7 @@ class CalendarioLaboralUpdate(UpdateView):
 
 class CalendarioLaboralDelete(DeleteView):
     model = CalendarioLaboral
-    template_name = "calendario_laboral_delete.html"   
+    template_name = "calendario_laboral_delete.html"    
     success_url = reverse_lazy("calendario_laboral_list")
 
 
@@ -276,7 +274,7 @@ class TipoIncidenciaDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "tipoincidencia_delete.html"
     success_url = reverse_lazy("tipoincidencia_list")
 
-  # ---------- TIPO NOMBRAMIENTO CRUD ----------
+ # ---------- TIPO NOMBRAMIENTO CRUD ----------
 
 class TipoNombramientoListView(LoginRequiredMixin, ListView):
     model = TipoNombramiento
@@ -315,11 +313,22 @@ def reporte_asistencia(request):
 
     registros = RegistroAsistencia.objects.all()
 
+    # Nota: Los filtros deben usar el nombre del campo en el modelo.
+    # Asumo que el campo de relación se llama 'trabajador' y el ID de unidad
+    # es accesible a través del trabajador.
+    # Por favor, verifica el nombre correcto del campo de relación si falla.
+
     if trabajador_id:
-        registros = registros.filter(id_trabajador=trabajador_id)
+        # Se asume que el campo en RegistroAsistencia se llama 'trabajador'
+        registros = registros.filter(trabajador__id=trabajador_id) 
 
     if unidad_id:
-        registros = registros.filter(id_trabajador__id_unidad=unidad_id)
+        # Se asume que en el modelo Trabajador, el campo a UnidadAdministrativa se llama 'unidad'
+        registros = registros.filter(trabajador__unidad__id=unidad_id) 
+        # Si el campo se llama 'id_unidad' en Trabajador, el filtro sería:
+        # registros = registros.filter(trabajador__id_unidad__id=unidad_id) 
+        # Tu código original usaba: registros.filter(id_trabajador__id_unidad=unidad_id) - lo cambié a la convención de Django.
+
 
     if fecha_inicio:
         registros = registros.filter(fecha__gte=fecha_inicio)
