@@ -11,6 +11,7 @@ from .models import (
     JornadaLaboral,
     RegistroAsistencia,
     CalendarioLaboral,
+    TipoIncidencia
 )
 
 
@@ -418,3 +419,38 @@ class CalendarioLaboralViewsTests(TestCase):
         self.assertFalse(
             CalendarioLaboral.objects.filter(id=self.dia.id).exists()
         )
+
+
+class TipoIncidenciaTests(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user("test", password="12345")
+        self.client.login(username="test", password="12345")
+        self.item = TipoIncidencia.objects.create(
+            nombre="Permiso",
+            descripcion="Personal"
+        )
+
+    def test_list(self):
+        response = self.client.get(reverse("tipoincidencia_list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Permiso")
+
+    def test_create(self):
+        self.client.post(reverse("tipoincidencia_create"), {
+            "nombre": "Incapacidad",
+            "descripcion": "Médica"
+        })
+        self.assertEqual(TipoIncidencia.objects.count(), 2)
+
+    def test_edit(self):
+        self.client.post(reverse("tipoincidencia_edit", args=[self.item.id]), {
+            "nombre": "Modificado",
+            "descripcion": "Cambio"
+        })
+        self.item.refresh_from_db()
+        self.assertEqual(self.item.nombre, "Modificado")
+
+    def test_delete(self):
+        self.client.post(reverse("tipoincidencia_delete", args=[self.item.id]))
+        self.assertEqual(TipoIncidencia.objects.count(), 0)

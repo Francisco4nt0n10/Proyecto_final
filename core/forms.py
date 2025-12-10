@@ -1,5 +1,6 @@
 from django import forms
-from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia
+from .models import Trabajador, UnidadAdministrativa, JornadaLaboral, RegistroAsistencia, TipoIncidencia
+
 
 
 class TrabajadorForm(forms.ModelForm):
@@ -39,3 +40,9 @@ class RegistroAsistenciaForm(forms.ModelForm):
     class Meta:
         model = RegistroAsistencia
         fields = ["trabajador", "fecha", "hora_entrada", "hora_salida"]
+
+
+class TipoIncidenciaForm(forms.ModelForm):
+    class Meta:
+        model = TipoIncidencia
+        fields = ["nombre", "descripcion"]

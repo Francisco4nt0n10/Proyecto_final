@@ -1,0 +1,22 @@
+<h1>Tipos de incidencia</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for t in tipos %}
+        <tr>
+            <td>{{ t.nombre }}</td>
+            <td>{{ t.descripcion }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2">No hay tipos registrados.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

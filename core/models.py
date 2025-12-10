@@ -104,10 +104,13 @@ class RegistroAsistencia(models.Model):
         return f"Asistencia de {self.trabajador} - {self.fecha}"
 # Modelo TipoIncidencia
 class TipoIncidencia(models.Model):
-    descripcion = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=100, default="Incidencia")
+    descripcion = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.descripcion
+        return self.nombre
+
+
 
 # Modelo Incidencia
 class Incidencia(models.Model):
