@@ -3,25 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Sistema de Control de Asistencia{% endblock %}</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-100 min-h-screen">
 
-    <!-- Barra superior simple -->
+    <!-- Barra superior -->
     <nav class="bg-indigo-700 text-white px-6 py-3 mb-6">
         <div class="flex justify-between items-center">
-            <div class="font-semibold">
+
+            <!-- Título -->
+            <div class="font-semibold text-lg">
                 SCA-B123
             </div>
-            <div>
-                <a href="/" class="mr-4 hover:underline">Inicio</a>
-                <a href="/trabajadores/" class="mr-4 hover:underline">Trabajadores</a>
-                <a href="/unidades/" class="mr-4 hover:underline">Unidades</a>
-                <a href="/JornadaLaboral/" class="mr-4 hover:underline">JornadaLaboral</a>
-                <a href="/Asistencia/" class="mr-4 hover:underline">Asistencia</a>
-                <a href="{% url 'incidencia_list' %}" class="mr-4 hover:underline">Incidencias</a>
-                <a href="/dashboard/" class="hover:underline">Dashboard</a>
+
+            <!-- Menú -->
+            <div class="space-x-4">
+
+                <a href="{% url 'home' %}" class="hover:underline">Inicio</a>
+
+                <a href="{% url 'trabajador_list' %}" class="hover:underline">Trabajadores</a>
+
+                <a href="{% url 'unidad_list' %}" class="hover:underline">Unidades</a>
+
+                <a href="{% url 'jornada_list' %}" class="hover:underline">Jornadas</a>
+
+                <a href="{% url 'asistencia_list' %}" class="hover:underline">Asistencia</a>
+
+                <a href="{% url 'incidencia_list' %}" class="hover:underline">Incidencias</a>
+
+                <a href="{% url 'tipoincidencia_list' %}" class="hover:underline">Tipo Incidencia</a>
+
+                <a href="{% url 'tiponombramiento_list' %}" class="hover:underline">Tipo Nombramiento</a>
+
+                <a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a>
             </div>
         </div>
     </nav>

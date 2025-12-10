@@ -49,6 +49,11 @@ from .views import (
     TipoIncidenciaCreateView,
     TipoIncidenciaUpdateView,
     TipoIncidenciaDeleteView,
+    
+    TipoNombramientoListView,
+    TipoNombramientoCreateView,
+    TipoNombramientoUpdateView,
+    TipoNombramientoDeleteView,
 
 )
 
@@ -101,6 +106,13 @@ urlpatterns = [
     path("tipoincidencia/nuevo/", TipoIncidenciaCreateView.as_view(), name="tipoincidencia_create"),
     path("tipoincidencia/<int:pk>/editar/", TipoIncidenciaUpdateView.as_view(), name="tipoincidencia_edit"),
     path("tipoincidencia/<int:pk>/eliminar/", TipoIncidenciaDeleteView.as_view(), name="tipoincidencia_delete"),
+   
+
+   # ----- Tipo Nombramiento -----
+   path("tiponombramiento/", TipoNombramientoListView.as_view(), name="tiponombramiento_list"),
+   path("tiponombramiento/nuevo/", TipoNombramientoCreateView.as_view(), name="tiponombramiento_create"),
+   path("tiponombramiento/<int:pk>/editar/", TipoNombramientoUpdateView.as_view(), name="tiponombramiento_edit"),
+   path("tiponombramiento/<int:pk>/eliminar/", TipoNombramientoDeleteView.as_view(), name="tiponombramiento_delete"),
 
 
 ]

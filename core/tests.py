@@ -454,3 +454,34 @@ class TipoIncidenciaTests(TestCase):
     def test_delete(self):
         self.client.post(reverse("tipoincidencia_delete", args=[self.item.id]))
         self.assertEqual(TipoIncidencia.objects.count(), 0)
+
+#Pruebas TipoNombramiento
+
+class TipoNombramientoTests(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user("tester", password="12345")
+        self.client.login(username="tester", password="12345")
+        self.item = TipoNombramiento.objects.create(descripcion="Base")
+
+    def test_list_view(self):
+        response = self.client.get(reverse("tiponombramiento_list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Base")
+
+    def test_create(self):
+        response = self.client.post(reverse("tiponombramiento_create"), {
+            "descripcion": "Temporal"
+        })
+        self.assertEqual(TipoNombramiento.objects.count(), 2)
+
+    def test_update(self):
+        response = self.client.post(reverse("tiponombramiento_edit", args=[self.item.id]), {
+            "descripcion": "Actualizado"
+        })
+        self.item.refresh_from_db()
+        self.assertEqual(self.item.descripcion, "Actualizado")
+
+    def test_delete(self):
+        response = self.client.post(reverse("tiponombramiento_delete", args=[self.item.id]))
+        self.assertEqual(TipoNombramiento.objects.count(), 0)

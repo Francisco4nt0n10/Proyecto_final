@@ -1,5 +1,5 @@
 from django import forms
-from .models import Trabajador, UnidadAdministrativa, JornadaLaboral, RegistroAsistencia, TipoIncidencia
+from .models import Trabajador, UnidadAdministrativa, JornadaLaboral, RegistroAsistencia, TipoIncidencia,TipoNombramiento
 
 
 
@@ -46,3 +46,16 @@ class TipoIncidenciaForm(forms.ModelForm):
     class Meta:
         model = TipoIncidencia
         fields = ["nombre", "descripcion"]
+
+
+class TipoNombramientoForm(forms.ModelForm):
+    class Meta:
+        model = TipoNombramiento
+        fields = ["descripcion"]
+        widgets = {
+            "descripcion": forms.TextInput(attrs={
+                "class": "border rounded p-2 w-full",
+                "placeholder": "Descripción del nombramiento"
+            })
+        }
+
