@@ -3,52 +3,72 @@
 {% block title %}Calendario laboral{% endblock %}
 
 {% block content %}
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3">Calendario laboral</h1>
-    <a href="{% url 'calendario_laboral_create' %}" class="btn btn-primary">
-        Nuevo día
-    </a>
-</div>
+<div class="max-w-5xl mx-auto mt-10">
 
-<table class="table table-striped table-hover">
-    <thead class="table-dark">
-        <tr>
-            <th>Fecha</th>
-            <th>Descripción</th>
-            <th>¿Inhábil?</th>
-            <th class="text-end">Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for dia in calendarios %}
-            <tr>
-                <td>{{ dia.fecha }}</td>
-                <td>{{ dia.descripcion }}</td>
-                <td>
-                    {% if dia.es_inhabil %}
-                        <span class="badge bg-danger">Inhábil</span>
-                    {% else %}
-                        <span class="badge bg-success">Laborable</span>
-                    {% endif %}
-                </td>
-                <td class="text-end">
-                    <a href="{% url 'calendario_laboral_update' dia.id %}"
-                       class="btn btn-sm btn-outline-secondary">
-                        Editar
-                    </a>
-                    <a href="{% url 'calendario_laboral_delete' dia.id %}"
-                       class="btn btn-sm btn-outline-danger">
-                        Eliminar
-                    </a>
-                </td>
-            </tr>
-        {% empty %}
-            <tr>
-                <td colspan="4" class="text-center">
-                    No hay registros en el calendario laboral.
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <!-- Encabezado -->
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-3xl font-bold text-indigo-700">Calendario laboral</h1>
+
+        <a href="{% url 'calendario_laboral_create' %}"
+           class="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 transition">
+            Nuevo día
+        </a>
+    </div>
+
+    <!-- Tabla -->
+    <div class="overflow-x-auto bg-white shadow-lg rounded-xl border border-gray-200">
+        <table class="w-full border-collapse text-left">
+            <thead class="bg-gray-800 text-white">
+                <tr>
+                    <th class="p-3 border-gray-700">Fecha</th>
+                    <th class="p-3 border-gray-700">Descripción</th>
+                    <th class="p-3 border-gray-700">¿Inhábil?</th>
+                    <th class="p-3 text-right border-gray-700">Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for dia in calendarios %}
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="p-3 border-b">{{ dia.fecha }}</td>
+                    <td class="p-3 border-b">{{ dia.descripcion }}</td>
+                    <td class="p-3 border-b">
+                        {% if dia.es_inhabil %}
+                            <span class="px-2 py-1 rounded-full bg-red-100 text-red-700 text-sm font-semibold">
+                                Inhábil
+                            </span>
+                        {% else %}
+                            <span class="px-2 py-1 rounded-full bg-green-100 text-green-700 text-sm font-semibold">
+                                Laborable
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td class="p-3 border-b text-right space-x-2">
+
+                        <a href="{% url 'calendario_laboral_update' dia.id %}"
+                           class="inline-block px-3 py-1 text-sm bg-white border border-gray-300 rounded-md hover:bg-gray-100 transition">
+                            Editar
+                        </a>
+
+                        <a href="{% url 'calendario_laboral_delete' dia.id %}"
+                           class="inline-block px-3 py-1 text-sm bg-red-600 text-white rounded-md hover:bg-red-700 transition">
+                            Eliminar
+                        </a>
+
+                    </td>
+                </tr>
+
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="p-4 text-center text-gray-500">
+                        No hay registros en el calendario laboral.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
 {% endblock %}
