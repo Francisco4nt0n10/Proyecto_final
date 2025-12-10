@@ -1,13 +1,73 @@
 {% extends "base.html" %}
+{% load widget_tweaks %} 
 
 {% block content %}
-<h2>Formulario de Jornada Laboral</h2>
+<div class="p-6 max-w-2xl mx-auto">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b pb-2">
+        {% if object %}
+            Editar Jornada Laboral
+        {% else %}
+            Nueva Jornada Laboral
+        {% endif %}
+    </h2>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
+    <form method="post" class="bg-white p-8 rounded-xl shadow-lg border border-gray-200">
+        {% csrf_token %}
 
-    <button type="submit" class="btn btn-success">Guardar</button>
-    <a href="{% url 'jornada_list' %}" class="btn btn-secondary">Cancelar</a>
-</form>
+        <div class="space-y-6">
+            {% for field in form %}
+                <div class="field-wrapper">
+                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ field.label }}
+                    </label>
+
+                    {# --- LÓGICA DE RENDERIZADO DEL CAMPO --- #}
+                    {% if field.name == 'dias_semana' %}
+                        {# Renderizado especial para CheckboxSelectMultiple #}
+                        <div class="mt-1 p-3 border border-gray-300 rounded-md shadow-sm bg-gray-50">
+                            <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+                                {% for choice in field %}
+                                    <div class="flex items-center space-x-2">
+                                        {# Aplicamos la clase del checkbox de Tailwind #}
+                                        {{ choice.tag|attr:"class:rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" }} 
+                                        
+                                        <label for="{{ choice.id_for_label }}" class="text-sm font-medium text-gray-700 cursor-pointer">
+                                            {{ choice.choice_label }} 
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
+                        {# Renderizado estándar para inputs/selects (Descripción, Horas) #}
+                        {{ field|attr:"class:mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500" }}
+                    {% endif %}
+                    {# --- FIN LÓGICA DE RENDERIZADO --- #}
+
+
+                    {% if field.help_text %}
+                        <p class="text-xs text-gray-500 mt-1">{{ field.help_text }}</p>
+                    {% endif %}
+
+                    {% for error in field.errors %}
+                        <p class="text-sm text-red-600 mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+        
+        <div class="mt-8 pt-4 border-t flex justify-end space-x-3">
+            <button type="submit"
+                    class="inline-flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                Guardar
+            </button>
+
+            <a href="{% url 'jornada_list' %}"
+               class="inline-flex items-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition duration-150 ease-in-out">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
 {% endblock %}
