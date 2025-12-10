@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="max-w-md mx-auto mt-10 p-6 bg-white shadow rounded">
+    <h1 class="text-xl font-bold mb-4">
+        {% if form.instance.pk %}Editar{% else %}Nuevo{% endif %} Tipo de Nombramiento
+    </h1>
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+            Guardar
+        </button>
+
+        <a href="{% url 'tiponombramiento_list' %}"
+           class="text-gray-600 hover:underline ml-4">Cancelar</a>
+    </form>
+</div>
+
+{% endblock %}

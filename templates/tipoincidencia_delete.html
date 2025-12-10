@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-xl mx-auto mt-10 bg-white p-6 rounded shadow">
+    <h1 class="text-xl font-bold mb-4">Eliminar Tipo de Incidencia</h1>
+
+    <p>¿Seguro que deseas eliminar <strong>{{ object.nombre }}</strong>?</p>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <button class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
+            Eliminar
+        </button>
+
+        <a href="{% url 'tipoincidencia_list' %}" 
+           class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 ml-2">
+            Cancelar
+        </a>
+    </form>
+</div>
+{% endblock %}

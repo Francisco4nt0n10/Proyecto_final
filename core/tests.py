@@ -11,8 +11,12 @@ from .models import (
     JornadaLaboral,
     RegistroAsistencia,
     CalendarioLaboral,
+<<<<<<< HEAD
     TipoIncidencia,
     Incidencia,
+=======
+    TipoIncidencia
+>>>>>>> AbrilDiaz
 )
 
 
@@ -420,14 +424,15 @@ class CalendarioLaboralViewsTests(TestCase):
         self.assertFalse(
             CalendarioLaboral.objects.filter(id=self.dia.id).exists()
         )
+# -------------------------------------------------------------------
+#   PRUEBAS INCIDENCIAS
+# -------------------------------------------------------------------
 
-    #   PRUEBAS INCIDENCIAS
 class IncidenciaTests(BaseTestCase):
 
     def setUp(self):
         super().setUp()
 
-        # Catálogos necesarios para crear un trabajador
         self.unidad = UnidadAdministrativa.objects.create(
             nombre="Unidad Pruebas",
             descripcion="Unidad para incidencias",
@@ -440,7 +445,6 @@ class IncidenciaTests(BaseTestCase):
             descripcion="Base",
         )
 
-        # Trabajador al que se le registrarán incidencias
         self.trabajador = Trabajador.objects.create(
             numero_empleado="INC001",
             nombre="Luis",
@@ -454,7 +458,6 @@ class IncidenciaTests(BaseTestCase):
             activo=True,
         )
 
-        # Tipo de incidencia de catálogo
         self.tipoIncidencia = TipoIncidencia.objects.create(
             descripcion="Falta"
         )
@@ -462,7 +465,7 @@ class IncidenciaTests(BaseTestCase):
     def test_incidencia_list_requires_login(self):
         clienteAnon = Client()
         respuesta = clienteAnon.get(reverse("incidencia_list"))
-        self.assertEqual(respuesta.status_code, 302)  # redirige a login
+        self.assertEqual(respuesta.status_code, 302)
 
     def test_incidencia_list_ok(self):
         respuesta = self.clientDjango.get(reverse("incidencia_list"))
@@ -490,7 +493,6 @@ class IncidenciaTests(BaseTestCase):
         self.assertEqual(incidencia.trabajador, self.trabajador)
         self.assertEqual(incidencia.tipo_incidencia, self.tipoIncidencia)
         self.assertEqual(incidencia.observaciones, "Falta injustificada")
-        # Debe quedar marcada con el usuario que inició sesión
         self.assertEqual(incidencia.autorizada_por, self.user)
 
     def test_incidencia_update_actualiza_registro(self):
@@ -538,3 +540,78 @@ class IncidenciaTests(BaseTestCase):
 
         self.assertEqual(respuesta.status_code, 302)
         self.assertEqual(Incidencia.objects.count(), 0)
+
+
+
+# -------------------------------------------------------------------
+#   PRUEBAS TIPO INCIDENCIA
+# -------------------------------------------------------------------
+
+class TipoIncidenciaTests(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user("test", password="12345")
+        self.client.login(username="test", password="12345")
+        self.item = TipoIncidencia.objects.create(
+            nombre="Permiso",
+            descripcion="Personal"
+        )
+
+    def test_list(self):
+        response = self.client.get(reverse("tipoincidencia_list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Permiso")
+
+    def test_create(self):
+        self.client.post(reverse("tipoincidencia_create"), {
+            "nombre": "Incapacidad",
+            "descripcion": "Médica"
+        })
+        self.assertEqual(TipoIncidencia.objects.count(), 2)
+
+    def test_edit(self):
+        self.client.post(reverse("tipoincidencia_edit", args=[self.item.id]), {
+            "nombre": "Modificado",
+            "descripcion": "Cambio"
+        })
+        self.item.refresh_from_db()
+        self.assertEqual(self.item.nombre, "Modificado")
+
+    def test_delete(self):
+        self.client.post(reverse("tipoincidencia_delete", args=[self.item.id]))
+        self.assertEqual(TipoIncidencia.objects.count(), 0)
+
+
+
+# -------------------------------------------------------------------
+#   PRUEBAS TIPO NOMBRAMIENTO
+# -------------------------------------------------------------------
+
+class TipoNombramientoTests(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user("tester", password="12345")
+        self.client.login(username="tester", password="12345")
+        self.item = TipoNombramiento.objects.create(descripcion="Base")
+
+    def test_list_view(self):
+        response = self.client.get(reverse("tiponombramiento_list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Base")
+
+    def test_create(self):
+        self.client.post(reverse("tiponombramiento_create"), {
+            "descripcion": "Temporal"
+        })
+        self.assertEqual(TipoNombramiento.objects.count(), 2)
+
+    def test_update(self):
+        self.client.post(reverse("tiponombramiento_edit", args=[self.item.id]), {
+            "descripcion": "Actualizado"
+        })
+        self.item.refresh_from_db()
+        self.assertEqual(self.item.descripcion, "Actualizado")
+
+    def test_delete(self):
+        self.client.post(reverse("tiponombramiento_delete", args=[self.item.id]))
+        self.assertEqual(TipoNombramiento.objects.count(), 0)

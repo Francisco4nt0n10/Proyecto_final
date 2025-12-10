@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Sistema de Control de Asistencia{% endblock %}</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
     {% block extra_head %}{% endblock %}
 </head>
+
 <body class="bg-gray-100 min-h-screen">
 
     <!-- Barra superior -->
     <nav class="bg-indigo-700 text-white px-6 py-3 mb-6">
         <div class="flex justify-between items-center">
-            <div class="font-semibold">
+
+            <!-- Título -->
+            <div class="font-semibold text-lg">
                 SCA-B123
             </div>
 
+<<<<<<< HEAD
             <div class="flex items-center gap-4 text-sm">
                 <a href="{% url 'home' %}" class="hover:underline">Inicio</a>
 
@@ -40,6 +43,28 @@
                     <a href="{% url 'account_login' %}" class="hover:underline">Iniciar sesión</a>
                     <a href="{% url 'account_signup' %}" class="hover:underline">Registrarse</a>
                 {% endif %}
+=======
+            <!-- Menú -->
+            <div class="space-x-4">
+
+                <a href="{% url 'home' %}" class="hover:underline">Inicio</a>
+
+                <a href="{% url 'trabajador_list' %}" class="hover:underline">Trabajadores</a>
+
+                <a href="{% url 'unidad_list' %}" class="hover:underline">Unidades</a>
+
+                <a href="{% url 'jornada_list' %}" class="hover:underline">Jornadas</a>
+
+                <a href="{% url 'asistencia_list' %}" class="hover:underline">Asistencia</a>
+
+                <a href="{% url 'incidencia_list' %}" class="hover:underline">Incidencias</a>
+
+                <a href="{% url 'tipoincidencia_list' %}" class="hover:underline">Tipo Incidencia</a>
+
+                <a href="{% url 'tiponombramiento_list' %}" class="hover:underline">Tipo Nombramiento</a>
+
+                <a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a>
+>>>>>>> AbrilDiaz
             </div>
         </div>
     </nav>

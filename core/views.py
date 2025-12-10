@@ -8,9 +8,14 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
+<<<<<<< HEAD
 from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia, CalendarioLaboral, Incidencia
 from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm,RegistroAsistenciaForm
 from django.http import HttpResponse
+=======
+from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia, CalendarioLaboral, Incidencia,TipoIncidencia,TipoNombramiento
+from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm,RegistroAsistenciaForm,TipoIncidenciaForm,TipoNombramientoForm
+>>>>>>> AbrilDiaz
 import csv
 from datetime import datetime
 
@@ -244,6 +249,60 @@ class IncidenciaDeleteView(LoginRequiredMixin, DeleteView):
     template_name = "incidencia_delete.html"
     success_url = reverse_lazy("incidencia_list")
 
+
+
+# ---------- TIPO DE INCIDENCIA ----------
+class TipoIncidenciaListView(LoginRequiredMixin, ListView):
+    model = TipoIncidencia
+    template_name = "tipoincidencia_list.html"
+    context_object_name = "tipos"
+
+
+
+class TipoIncidenciaCreateView(LoginRequiredMixin, CreateView):
+    model = TipoIncidencia
+    form_class = TipoIncidenciaForm
+    template_name = "tipoincidencia_form.html"
+    success_url = reverse_lazy("tipoincidencia_list")
+
+class TipoIncidenciaUpdateView(LoginRequiredMixin, UpdateView):
+    model = TipoIncidencia
+    form_class = TipoIncidenciaForm
+    template_name = "tipoincidencia_form.html"
+    success_url = reverse_lazy("tipoincidencia_list")
+
+class TipoIncidenciaDeleteView(LoginRequiredMixin, DeleteView):
+    model = TipoIncidencia
+    template_name = "tipoincidencia_delete.html"
+    success_url = reverse_lazy("tipoincidencia_list")
+
+  # ---------- TIPO NOMBRAMIENTO CRUD ----------
+
+class TipoNombramientoListView(LoginRequiredMixin, ListView):
+    model = TipoNombramiento
+    template_name = "tiponombramiento_list.html"
+    context_object_name = "tipos"
+
+
+class TipoNombramientoCreateView(LoginRequiredMixin, CreateView):
+    model = TipoNombramiento
+    form_class = TipoNombramientoForm
+    template_name = "tiponombramiento_form.html"
+    success_url = reverse_lazy("tiponombramiento_list")
+
+
+class TipoNombramientoUpdateView(LoginRequiredMixin, UpdateView):
+    model = TipoNombramiento
+    form_class = TipoNombramientoForm
+    template_name = "tiponombramiento_form.html"
+    success_url = reverse_lazy("tiponombramiento_list")
+
+
+class TipoNombramientoDeleteView(LoginRequiredMixin, DeleteView):
+    model = TipoNombramiento
+    template_name = "tiponombramiento_delete.html"
+    success_url = reverse_lazy("tiponombramiento_list")
+#Reportes
 def reporte_asistencia(request):
     trabajadores = Trabajador.objects.all()
     unidades = UnidadAdministrativa.objects.all()
