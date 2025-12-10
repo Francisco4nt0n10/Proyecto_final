@@ -10,9 +10,9 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.http import HttpResponse # Importado del lado HEAD para exportar CSV
 
 # Se incluyen todos los modelos de ambos lados del conflicto:
-from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia, CalendarioLaboral, Incidencia,TipoIncidencia,TipoNombramiento
+from .models import Trabajador, UnidadAdministrativa, JornadaLaboral,RegistroAsistencia, CalendarioLaboral, Incidencia,TipoIncidencia,TipoNombramiento,Puesto
 # Se incluyen todos los formularios de ambos lados del conflicto:
-from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm,RegistroAsistenciaForm,TipoIncidenciaForm,TipoNombramientoForm 
+from .forms import TrabajadorForm, UnidadAdministrativaForm, JornadaLaboralForm,RegistroAsistenciaForm,TipoIncidenciaForm,TipoNombramientoForm,PuestoForm
 
 import csv
 from datetime import datetime
@@ -300,6 +300,35 @@ class TipoNombramientoDeleteView(LoginRequiredMixin, DeleteView):
     model = TipoNombramiento
     template_name = "tiponombramiento_delete.html"
     success_url = reverse_lazy("tiponombramiento_list")
+
+#-------PUESTO-----
+
+class PuestoListView(LoginRequiredMixin, ListView):
+    model = Puesto
+    template_name = "puesto_list.html"
+    context_object_name = "puestos"
+
+
+class PuestoCreateView(LoginRequiredMixin, CreateView):
+    model = Puesto
+    form_class = PuestoForm
+    template_name = "puesto_form.html"
+    success_url = reverse_lazy("puesto_list")
+
+
+class PuestoUpdateView(LoginRequiredMixin, UpdateView):
+    model = Puesto
+    form_class = PuestoForm
+    template_name = "puesto_form.html"
+    success_url = reverse_lazy("puesto_list")
+
+
+class PuestoDeleteView(LoginRequiredMixin, DeleteView):
+    model = Puesto
+    template_name = "puesto_delete.html"
+    success_url = reverse_lazy("puesto_list")
+
+
 #Reportes
 def reporte_asistencia(request):
     trabajadores = Trabajador.objects.all()

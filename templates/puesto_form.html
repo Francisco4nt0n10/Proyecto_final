@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="max-w-xl mx-auto mt-10 bg-white shadow-md rounded-lg p-6">
+
+    <h2 class="text-xl font-bold text-gray-800 mb-4">
+        {{ view.object.pk|yesno:"Editar Puesto,Nuevo Puesto" }}
+    </h2>
+
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+
+        <div>
+            <label class="block font-medium text-gray-700">Nombre del Puesto</label>
+            {{ form.nombre_puesto }}
+        </div>
+
+        <div>
+            <label class="block font-medium text-gray-700">Nivel</label>
+            {{ form.nivel }}
+        </div>
+
+        <button type="submit"
+            class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition">
+            Guardar
+        </button>
+    </form>
+
+    <a href="{% url 'puesto_list' %}"
+       class="block text-center mt-4 text-gray-600 hover:text-gray-900">
+        Volver
+    </a>
+</div>
+{% endblock %}

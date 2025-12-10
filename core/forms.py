@@ -1,5 +1,5 @@
 from django import forms
-from .models import Trabajador, UnidadAdministrativa, JornadaLaboral, RegistroAsistencia, TipoIncidencia,TipoNombramiento
+from .models import Trabajador, UnidadAdministrativa, JornadaLaboral, RegistroAsistencia, TipoIncidencia,TipoNombramiento,Puesto
 
 
 
@@ -58,4 +58,11 @@ class TipoNombramientoForm(forms.ModelForm):
                 "placeholder": "Descripción del nombramiento"
             })
         }
+
+
+class PuestoForm(forms.ModelForm):
+    class Meta:
+        model = Puesto
+        fields = ['nombre_puesto', 'nivel']
+
 
