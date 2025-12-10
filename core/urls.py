@@ -55,6 +55,11 @@ from .views import (
     TipoNombramientoUpdateView,
     TipoNombramientoDeleteView,
 
+    PuestoListView,
+    PuestoCreateView,
+    PuestoUpdateView,
+    PuestoDeleteView,
+
 )
 
 urlpatterns = [
@@ -113,6 +118,16 @@ urlpatterns = [
    path("tiponombramiento/nuevo/", TipoNombramientoCreateView.as_view(), name="tiponombramiento_create"),
    path("tiponombramiento/<int:pk>/editar/", TipoNombramientoUpdateView.as_view(), name="tiponombramiento_edit"),
    path("tiponombramiento/<int:pk>/eliminar/", TipoNombramientoDeleteView.as_view(), name="tiponombramiento_delete"),
+
+
+    #PUESTO
+  path("puestos/", PuestoListView.as_view(), name="puesto_list"),
+  path("puestos/nuevo/", PuestoCreateView.as_view(), name="puesto_create"),
+  path("puestos/<int:pk>/editar/", PuestoUpdateView.as_view(), name="puesto_update"),
+  path("puestos/<int:pk>/eliminar/", PuestoDeleteView.as_view(), name="puesto_delete"),
+
+
+
 
 
 ]
