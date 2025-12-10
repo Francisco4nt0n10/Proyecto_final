@@ -135,10 +135,9 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
-
 USE_I18N = True
 
+TIME_ZONE = "America/Mexico_City"
 USE_TZ = True
 
 

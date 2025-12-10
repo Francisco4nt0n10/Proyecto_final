@@ -35,9 +35,42 @@ class JornadaLaboralForm(forms.ModelForm):
 
 
 class RegistroAsistenciaForm(forms.ModelForm):
+    fecha = forms.DateField(
+        label='Fecha',
+        input_formats=['%Y-%m-%d'],  # formato que envía un <input type="date">
+        widget=forms.DateInput(
+            attrs={
+                'type': 'date',               # 🔹 hace que el navegador muestre datepicker
+                'class': 'border rounded-lg p-2 w-full'
+            }
+        )
+    )
+
+    hora_entrada = forms.TimeField(
+        label='Hora entrada',
+        required=False,
+        widget=forms.TimeInput(
+            attrs={
+                'type': 'time',
+                'class': 'border rounded-lg p-2 w-full'
+            }
+        )
+    )
+
+    hora_salida = forms.TimeField(
+        label='Hora salida',
+        required=False,
+        widget=forms.TimeInput(
+            attrs={
+                'type': 'time',
+                'class': 'border rounded-lg p-2 w-full'
+            }
+        )
+    )
+
     class Meta:
         model = RegistroAsistencia
-        fields = ["trabajador", "fecha", "hora_entrada", "hora_salida"]
+        fields = ['trabajador', 'fecha', 'hora_entrada', 'hora_salida']
 
 
 class TipoIncidenciaForm(forms.ModelForm):

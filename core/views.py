@@ -160,25 +160,60 @@ def marcar_salida(request, trabajador_id):
     messages.success(request, "Salida registrada correctamente.")
     return redirect("asistencia_list")
 
+@login_required
+def asistencia_list(request):
+    hoy = timezone.localdate()
+    trabajadores = Trabajador.objects.all()
 
+    registros = []
+    for t in trabajadores:
+        asistencia = RegistroAsistencia.objects.filter(
+            trabajador=t,
+            fecha=hoy
+        ).first()
+        registros.append({
+            'trabajador': t,
+            'asistencia': asistencia,
+        })
+
+    return render(request, 'asistencia_list.html', {
+        'registros': registros,
+        'hoy': hoy,
+    })
+
+@login_required
 def marcar_entrada(request, trabajador_id):
     trabajador = get_object_or_404(Trabajador, id=trabajador_id)
-    hoy = date.today()
+    hoy = timezone.localdate()
+    ahora = timezone.localtime().time()
 
-    registro, creado = RegistroAsistencia.objects.get_or_create(
+    asistencia, created = RegistroAsistencia.objects.get_or_create(
         trabajador=trabajador,
-        fecha=hoy,
+        fecha=hoy
     )
 
-    if registro.hora_entrada:
-        messages.error(request, "La entrada ya fue registrada.")
-        return redirect("asistencia_list")
+    if asistencia.hora_entrada is None:
+        asistencia.hora_entrada = ahora
+        asistencia.save()
 
-    registro.hora_entrada = timezone.now().time()
-    registro.save()
+    return redirect('asistencia_list')
 
-    messages.success(request, "Entrada registrada correctamente.")
-    return redirect("asistencia_list")
+
+@login_required
+def marcar_salida(request, trabajador_id):
+    trabajador = get_object_or_404(Trabajador, id=trabajador_id)
+    hoy = timezone.localdate()
+    ahora = timezone.localtime().time()
+
+    asistencia, created = RegistroAsistencia.objects.get_or_create(
+        trabajador=trabajador,
+        fecha=hoy
+    )
+
+    asistencia.hora_salida = ahora
+    asistencia.save()
+
+    return redirect('asistencia_list')
 
 # ---------- Calendario Laboral ----------
 class CalendarioLaboralList(ListView):

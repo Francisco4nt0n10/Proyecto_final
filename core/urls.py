@@ -31,6 +31,7 @@ from .views import (
     marcar_entrada,
     marcar_salida,
     reporte_asistencia,
+    asistencia_list,
 
     # Calendario laboral
     CalendarioLaboralList,
@@ -86,7 +87,7 @@ urlpatterns = [
     path("jornadas/<int:pk>/eliminar/", JornadaDeleteView.as_view(), name="jornada_delete"),
 
     # Asistencia
-    path("asistencias/", AsistenciaListView.as_view(), name="asistencia_list"),
+    path("asistencias/", asistencia_list, name="asistencia_list"),
     path("asistencias/nueva/", AsistenciaCreateView.as_view(), name="asistencia_create"),
     path("asistencias/<int:pk>/editar/", AsistenciaUpdateView.as_view(), name="asistencia_edit"),
     path("asistencias/<int:pk>/eliminar/", AsistenciaDeleteView.as_view(), name="asistencia_delete"),

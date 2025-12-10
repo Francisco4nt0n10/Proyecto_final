@@ -11,12 +11,8 @@ from .models import (
     JornadaLaboral,
     RegistroAsistencia,
     CalendarioLaboral,
-<<<<<<< HEAD
     TipoIncidencia,
     Incidencia,
-=======
-    TipoIncidencia
->>>>>>> AbrilDiaz
 )
 
 

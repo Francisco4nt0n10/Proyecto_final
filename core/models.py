@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import time
 
 # Modelo Trabajador
 class Trabajador(models.Model):
@@ -82,15 +83,16 @@ class RegistroAsistencia(models.Model):
     estatus = models.CharField(max_length=50, default="Pendiente")
 
     def calcular_estatus(self):
-        """Evalúa la asistencia según la jornada asignada."""
-        jornada = self.trabajador.jornada  # Asegúrate de que trabajador tenga FK a JornadaLaboral
-
+        """
+        Evalúa la asistencia de manera simple, sin usar trabajador.jornada.
+        """
         if not self.hora_entrada:
             self.estatus = "Falta"
             return
 
-        # RETARDO
-        if self.hora_entrada > jornada.hora_entrada:
+        hora_oficial = time(8, 0)  # Hora oficial de entrada
+
+        if self.hora_entrada > hora_oficial:
             self.estatus = "Retardo"
         else:
             self.estatus = "Asistencia normal"
@@ -102,6 +104,8 @@ class RegistroAsistencia(models.Model):
 
     def __str__(self):
         return f"Asistencia de {self.trabajador} - {self.fecha}"
+
+
 # Modelo TipoIncidencia
 class TipoIncidencia(models.Model):
     nombre = models.CharField(max_length=100, default="Incidencia")
